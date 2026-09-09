@@ -6,7 +6,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PetController;
-
+use App\Http\Controllers\SitterProfileController;
 
 
 
@@ -22,4 +22,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/pets', [PetController::class, 'index']);
     Route::get('/pets/create', [PetController::class, 'create']);
     Route::post('/pets', [PetController::class, 'store']);
+
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/sitter-profile/create', [SitterProfileController::class, 'create']);
+    Route::post('/sitter-profile', [SitterProfileController::class, 'store']);
+    Route::get('/sitter-profile', [SitterProfileController::class, 'show']);
+    Route::get('/sitters', [SitterProfileController::class, 'index']);
 });
