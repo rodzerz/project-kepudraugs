@@ -16,37 +16,56 @@
 <body>
 
 
-<header>
-    <h1>🐾 ĶepuDraugs.lv</h1>
+<header class="header">
+    <div class="header-content">
 
-    @auth
-        <p>Sveiks, {{ auth()->user()->name }}!</p>
+        <a href="/" class="logo">
+            🐾 ĶepuDraugs.lv
+        </a>
 
-        <form method="POST" action="/logout">
-            @csrf
-            <button type="submit">Iziet</button>
-        </form>
-    @else
-        <a href="/login">Pieslēgties</a>
-        <a href="/register">Reģistrēties</a>
-    @endauth
+    </div>
 </header>
 
 
 <main>
 
-    <section>
-        <h2>Uzticama aprūpe Tavam mīlulim</h2>
+    <section class="hero">
 
-        <p>
-            ĶepuDraugs.lv ir tīmekļa lietotne, kas palīdz
-            mājdzīvnieku īpašniekiem atrast uzticamus
-            mājdzīvnieku pieskatītājus.
-        </p>
+        <div class="hero-text">
+
+            <p class="subtitle">🐾 Uzticama aprūpe Tavam mīlulim</p>
+
+            <h1>
+                Atrodi savu<br>
+                <span>ĶepuDraugu</span>
+            </h1>
+
+            <p class="hero-description">
+                ĶepuDraugs.lv palīdz mājdzīvnieku īpašniekiem
+                atrast uzticamus pieskatītājus saviem mīluļiem.
+            </p>
+
+            <div class="hero-buttons">
+                <a href="/register" class="main-button">
+                    Sākt izmantot
+                </a>
+
+                <a href="/login" class="secondary-button">
+                    Pieslēgties
+                </a>
+            </div>
+
+        </div>
+
+        <div class="hero-paw">
+            🐶
+        </div>
+
     </section>
 
 
-    <section>
+    <section class="about">
+
         <h2>Par ĶepuDraugs.lv</h2>
 
         <p>
@@ -54,39 +73,42 @@
             atrašanu vienkāršāku, ērtāku un pārskatāmāku.
         </p>
 
-        <p>
-            Platformā lietotāji varēs apskatīt pieskatītāju
-            informāciju, uzzināt par viņu pieredzi un izmantot
-            rezervāciju un saziņas iespējas.
-        </p>
-    </section>
+        <div class="features">
+
+            <div class="feature">
+                <div class="feature-icon">🔎</div>
+
+                <h3>Atrodi pieskatītāju</h3>
+
+                <p>
+                    Meklē piemērotu pieskatītāju pēc savām vajadzībām.
+                </p>
+            </div>
 
 
-    <section>
-        <h2>Kam paredzēta lietotne?</h2>
+            <div class="feature">
+                <div class="feature-icon">❤️</div>
 
-        <h3>🐶 Mājdzīvnieku īpašniekiem</h3>
+                <h3>Izvēlies uzticamu</h3>
 
-        <p>
-            Ērts veids, kā atrast piemērotu cilvēku,
-            kas parūpēsies par viņu mājdzīvnieku.
-        </p>
-
-
-        <h3>🐾 Mājdzīvnieku pieskatītājiem</h3>
-
-        <p>
-            Iespēja piedāvāt savus pakalpojumus,
-            veidot profilu un iegūt jaunus klientus.
-        </p>
+                <p>
+                    Apskati informāciju, pieredzi un atsauksmes.
+                </p>
+            </div>
 
 
-        <h3>⚙️ Administratoram</h3>
+            <div class="feature">
+                <div class="feature-icon">📅</div>
 
-        <p>
-            Iespēja pārvaldīt lietotājus un
-            uzraudzīt sistēmas darbību.
-        </p>
+                <h3>Veic rezervāciju</h3>
+
+                <p>
+                    Ērti vienojies par mājdzīvnieka pieskatīšanu.
+                </p>
+            </div>
+
+        </div>
+
     </section>
 
 </main>

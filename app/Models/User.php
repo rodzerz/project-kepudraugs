@@ -26,6 +26,15 @@ class User extends Authenticatable
     {
         return $this->hasOne(SitterProfile::class);
     }
+    public function ownerBookings(): HasMany
+{
+    return $this->hasMany(Booking::class, 'owner_id');
+}
+
+public function sitterBookings(): HasMany
+{
+    return $this->hasMany(Booking::class, 'sitter_id');
+}
 
     protected function casts(): array
     {

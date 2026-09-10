@@ -1,3 +1,4 @@
+```blade
 <!DOCTYPE html>
 <html lang="lv">
 <head>
@@ -13,24 +14,22 @@
 
     <h2>Mājdzīvnieku pieskatītāji</h2>
 
+    <form method="GET" action="/sitters">
 
-<form method="GET" action="/sitters">
+        <label>Meklēt pēc pilsētas:</label>
 
-    <label>Meklēt pēc pilsētas:</label>
+        <input
+            type="text"
+            name="city"
+            value="{{ request('city') }}"
+            placeholder="Piemēram, Rīga"
+        >
 
-    <input
-        type="text"
-        name="city"
-        value="{{ request('city') }}"
-        placeholder="Piemēram, Rīga"
-    >
+        <button type="submit">Meklēt</button>
 
-    <button type="submit">Meklēt</button>
+    </form>
 
-</form>
-
-<br>
-
+    <br>
 
     @if ($profiles->count() > 0)
 
@@ -63,6 +62,12 @@
                     <strong>Pieskatāmie dzīvnieki:</strong>
                     {{ $profile->accepted_animals }}
                 </p>
+
+                <br>
+
+                <a href="/bookings/create/{{ $profile->id }}">
+                    Veikt rezervāciju
+                </a>
             </div>
 
             <hr>
@@ -79,3 +84,4 @@
 
 </body>
 </html>
+```
