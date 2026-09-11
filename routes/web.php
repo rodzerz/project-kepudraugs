@@ -43,6 +43,12 @@ Route::middleware('auth')->group(function () {
 });
 
 
+Route::get('/bookings', [BookingController::class, 'index'])
+    ->middleware('auth');
+
+Route::get('/bookings/sitter', [BookingController::class, 'sitterBookings'])
+    ->middleware('auth');
+
 Route::get('/bookings/create/{sitter}', [BookingController::class, 'create'])
     ->middleware('auth');
 

@@ -1,5 +1,5 @@
+```php
 <?php
-
 
 namespace App\Http\Controllers;
 
@@ -15,6 +15,26 @@ class BookingController extends Controller
         $sitterProfile = SitterProfile::with('user')->findOrFail($sitter);
 
         return view('bookings.create', compact('sitterProfile'));
+    }
+
+    public function index()
+    {
+        $bookings = Auth::user()->ownerBookings()
+            ->with('sitter')
+            ->latest()
+            ->get();
+
+        return view('bookings.index', compact('bookings'));
+    }
+
+    public function sitterBookings()
+    {
+        $bookings = Auth::user()->sitterBookings()
+            ->with('owner')
+            ->latest()
+            ->get();
+
+        return view('bookings.sitter', compact('bookings'));
     }
 
     public function store(Request $request)
@@ -43,4 +63,4 @@ class BookingController extends Controller
             ->with('success', 'Rezervācijas pieprasījums veiksmīgi nosūtīts!');
     }
 }
-
+```
