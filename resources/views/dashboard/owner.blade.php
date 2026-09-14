@@ -9,27 +9,11 @@
 
 <body>
 
-    <h1>🐾 ĶepuDraugs.lv</h1>
+    <x-owner-nav />
 
     <h2>Sveiks, {{ auth()->user()->name }}!</h2>
 
     <p>Šis ir mājdzīvnieka īpašnieka panelis.</p>
-
-    <hr>
-
-    <h3>Manas iespējas</h3>
-
-    <ul>
-        <li>Mans profils</li>
-        <li>Mani mājdzīvnieki</li>
-        <li>Meklēt pieskatītāju</li>
-        <li>Manas rezervācijas</li>
-    </ul>
-
-    <form method="POST" action="/logout">
-        @csrf
-        <button type="submit">Iziet</button>
-    </form>
 
 </body>
 </html>

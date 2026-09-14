@@ -1,4 +1,3 @@
-```php
 <?php
 
 namespace App\Http\Controllers;
@@ -62,5 +61,36 @@ class BookingController extends Controller
         return redirect('/dashboard')
             ->with('success', 'Rezervācijas pieprasījums veiksmīgi nosūtīts!');
     }
+
+    public function accept($booking)
+    {
+        $booking = Booking::findOrFail($booking);
+
+        if ($booking->sitter_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $booking->update([
+            'status' => 'accepted',
+        ]);
+
+        return redirect('/bookings/sitter')
+            ->with('success', 'Rezervācija ir pieņemta!');
+    }
+
+    public function reject($booking)
+    {
+        $booking = Booking::findOrFail($booking);
+
+        if ($booking->sitter_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $booking->update([
+            'status' => 'rejected',
+        ]);
+
+        return redirect('/bookings/sitter')
+            ->with('success', 'Rezervācija ir noraidīta!');
+    }
 }
-```

@@ -1,4 +1,3 @@
-```blade
 <!DOCTYPE html>
 <html lang="lv">
 <head>
@@ -10,7 +9,7 @@
 
 <body>
 
-    <h1>🐾 ĶepuDraugs.lv</h1>
+    <x-owner-nav />
 
     <h2>Mājdzīvnieku pieskatītāji</h2>
 
@@ -80,8 +79,5 @@
 
     @endif
 
-    <a href="/dashboard">Atpakaļ uz paneli</a>
-
 </body>
 </html>
-```

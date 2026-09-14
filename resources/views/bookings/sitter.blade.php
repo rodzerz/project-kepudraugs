@@ -10,9 +10,15 @@
 
 <body>
 
-    <h1>🐾 ĶepuDraugs.lv</h1>
+    <x-sitter-nav />
 
     <h2>Saņemtās rezervācijas</h2>
+
+    @if (session('success'))
+        <p>
+            <strong>{{ session('success') }}</strong>
+        </p>
+    @endif
 
     @if ($bookings->count() > 0)
 
@@ -49,6 +55,28 @@
                     {{ $booking->status }}
                 </p>
 
+                @if ($booking->status === 'pending')
+
+                    <form action="/bookings/{{ $booking->id }}/accept" method="POST">
+                        @csrf
+
+                        <button type="submit">
+                            Pieņemt
+                        </button>
+                    </form>
+
+                    <br>
+
+                    <form action="/bookings/{{ $booking->id }}/reject" method="POST">
+                        @csrf
+
+                        <button type="submit">
+                            Noraidīt
+                        </button>
+                    </form>
+
+                @endif
+
             </div>
 
             <hr>
@@ -60,10 +88,6 @@
         <p>Tev vēl nav saņemtu rezervāciju.</p>
 
     @endif
-
-    <br>
-
-    <a href="/dashboard">Atpakaļ uz paneli</a>
 
 </body>
 </html>

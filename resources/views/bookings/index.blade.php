@@ -10,9 +10,15 @@
 
 <body>
 
-    <h1>🐾 ĶepuDraugs.lv</h1>
+    <x-owner-nav />
 
     <h2>Manas rezervācijas</h2>
+
+    @if (session('success'))
+        <p>
+            <strong>{{ session('success') }}</strong>
+        </p>
+    @endif
 
     @if ($bookings->count() > 0)
 
@@ -57,13 +63,9 @@
 
     @else
 
-        <p>Tev vēl nav nevienas rezervācijas.</p>
+        <p>Tev vēl nav izveidotu rezervāciju.</p>
 
     @endif
-
-    <br>
-
-    <a href="/dashboard">Atpakaļ uz paneli</a>
 
 </body>
 </html>
