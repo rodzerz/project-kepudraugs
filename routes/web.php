@@ -8,7 +8,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PetController;
 use App\Http\Controllers\SitterProfileController;
 use App\Http\Controllers\BookingController;
-
+use App\Http\Controllers\ProfileController;
 
 Route::get('/', [HomeController::class, 'index']);
 
@@ -30,6 +30,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/pets/create', [PetController::class, 'create']);
     Route::post('/pets', [PetController::class, 'store']);
 
+    Route::delete('/pets/{pet}', [PetController::class, 'destroy']);
+
 });
 
 
@@ -39,6 +41,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/sitter-profile', [SitterProfileController::class, 'store']);
     Route::get('/sitter-profile', [SitterProfileController::class, 'show']);
     Route::get('/sitters', [SitterProfileController::class, 'index']);
+
+});
+
+
+Route::middleware('auth')->group(function () {
+
+    Route::get('/profile', [ProfileController::class, 'show']);
+    Route::get('/profile/edit', [ProfileController::class, 'edit']);
+    Route::put('/profile', [ProfileController::class, 'update']);
 
 });
 
@@ -54,3 +65,13 @@ Route::get('/bookings/create/{sitter}', [BookingController::class, 'create'])
 
 Route::post('/bookings', [BookingController::class, 'store'])
     ->middleware('auth');
+
+Route::post('/bookings/{booking}/accept', [BookingController::class, 'accept'])
+    ->middleware('auth');
+
+Route::post('/bookings/{booking}/reject', [BookingController::class, 'reject'])
+    ->middleware('auth');
+
+Route::post('/bookings/{booking}/cancel', [BookingController::class, 'cancel'])
+    ->middleware('auth');
+

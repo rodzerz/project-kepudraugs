@@ -1,3 +1,4 @@
+```blade id="8qk2mf"
 <!DOCTYPE html>
 <html lang="lv">
 <head>
@@ -5,79 +6,136 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Pieskatītāji - ĶepuDraugs.lv</title>
+
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>
 
 <body>
 
     <x-owner-nav />
 
-    <h2>Mājdzīvnieku pieskatītāji</h2>
+    <main class="page-container">
 
-    <form method="GET" action="/sitters">
+        <div class="card">
 
-        <label>Meklēt pēc pilsētas:</label>
+            <p class="subtitle">🐾 Atrodi savu palīgu</p>
 
-        <input
-            type="text"
-            name="city"
-            value="{{ request('city') }}"
-            placeholder="Piemēram, Rīga"
-        >
+            <h1 class="page-title">
+                Mājdzīvnieku pieskatītāji
+            </h1>
 
-        <button type="submit">Meklēt</button>
+            <p class="page-description">
+                Atrodi piemērotu pieskatītāju savam mājdzīvniekam
+                pēc pilsētas.
+            </p>
 
-    </form>
+            <form method="GET" action="/sitters">
 
-    <br>
+                <div class="form-group">
 
-    @if ($profiles->count() > 0)
+                    <label for="city">
+                        Meklēt pēc pilsētas
+                    </label>
 
-        @foreach ($profiles as $profile)
+                    <input
+                        type="text"
+                        id="city"
+                        name="city"
+                        value="{{ request('city') }}"
+                        placeholder="Piemēram, Rīga"
+                    >
 
-            <div>
-                <h3>{{ $profile->user->name }}</h3>
+                </div>
 
-                <p>
-                    <strong>Pilsēta:</strong>
-                    {{ $profile->city }}
-                </p>
+                <button type="submit">
+                    🔎 Meklēt pieskatītāju
+                </button>
 
-                <p>
-                    <strong>Par sevi:</strong>
-                    {{ $profile->description ?? 'Nav norādīts' }}
-                </p>
+            </form>
 
-                <p>
-                    <strong>Pieredze:</strong>
-                    {{ $profile->experience ?? 'Nav norādīta' }}
-                </p>
+        </div>
 
-                <p>
-                    <strong>Cena:</strong>
-                    {{ $profile->price }} € / dienā
-                </p>
+        <br>
 
-                <p>
-                    <strong>Pieskatāmie dzīvnieki:</strong>
-                    {{ $profile->accepted_animals }}
-                </p>
+        @if ($profiles->count() > 0)
 
-                <br>
+            <div class="features">
 
-                <a href="/bookings/create/{{ $profile->id }}">
-                    Veikt rezervāciju
-                </a>
+                @foreach ($profiles as $profile)
+
+                    <div class="feature">
+
+                        <div class="feature-icon">
+                            🐕
+                        </div>
+
+                        <h3>
+                            {{ $profile->user->name }}
+                        </h3>
+
+                        <p>
+                            <strong>📍 Pilsēta:</strong><br>
+                            {{ $profile->city }}
+                        </p>
+
+                        <p>
+                            <strong>💬 Par sevi:</strong><br>
+                            {{ $profile->description ?? 'Nav norādīts' }}
+                        </p>
+
+                        <p>
+                            <strong>⭐ Pieredze:</strong><br>
+                            {{ $profile->experience ?? 'Nav norādīta' }}
+                        </p>
+
+                        <p>
+                            <strong>💶 Cena:</strong><br>
+                            {{ $profile->price }} € / dienā
+                        </p>
+
+                        <p>
+                            <strong>🐾 Pieskatāmie dzīvnieki:</strong><br>
+                            {{ $profile->accepted_animals }}
+                        </p>
+
+                        <br>
+
+                        <a
+                            href="/bookings/create/{{ $profile->id }}"
+                            class="main-button"
+                        >
+                            Veikt rezervāciju
+                        </a>
+
+                    </div>
+
+                @endforeach
+
             </div>
 
-            <hr>
+        @else
 
-        @endforeach
+            <div class="card" style="text-align: center;">
 
-    @else
+                <div class="feature-icon">
+                    🔎
+                </div>
 
-        <p>Šobrīd nav pieejamu pieskatītāju.</p>
+                <h3>
+                    Pieskatītāji nav atrasti
+                </h3>
 
-    @endif
+                <p class="page-description">
+                    Šobrīd pēc norādītajiem kritērijiem
+                    nav pieejamu pieskatītāju.
+                </p>
+
+            </div>
+
+        @endif
+
+    </main>
 
 </body>
 </html>
+```

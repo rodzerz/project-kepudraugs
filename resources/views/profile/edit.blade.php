@@ -5,12 +5,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Ielogošanās - ĶepuDraugs.lv</title>
+    <title>Rediģēt profilu - ĶepuDraugs.lv</title>
 
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>
 
 <body>
+
+    @if ($user->role === 'owner')
+
+        <x-owner-nav />
+
+    @elseif ($user->role === 'sitter')
+
+        <x-sitter-nav />
+
+    @endif
 
     <main class="page-container">
 
@@ -21,20 +31,19 @@
                 <div style="text-align: center;">
 
                     <div class="feature-icon">
-                        🐾
+                        ✏️
                     </div>
 
                     <p class="subtitle">
-                        ĶepuDraugs.lv
+                        👤 Tavs profils
                     </p>
 
                     <h1 class="page-title">
-                        Laipni lūdzam atpakaļ!
+                        Rediģēt profilu
                     </h1>
 
                     <p class="page-description">
-                        Ielogojies savā kontā, lai turpinātu izmantot
-                        ĶepuDraugs.lv.
+                        Maini sava konta pamatinformāciju.
                     </p>
 
                 </div>
@@ -51,60 +60,54 @@
 
                 @endif
 
-                <form action="/login" method="POST">
+                <form action="/profile" method="POST">
 
                     @csrf
+                    @method('PUT')
+
+                    <div class="form-group">
+
+                        <label for="name">
+                            Vārds
+                        </label>
+
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            value="{{ old('name', $user->name) }}"
+                            required
+                        >
+
+                    </div>
 
                     <div class="form-group">
 
                         <label for="email">
-                            ✉️ E-pasts
+                            E-pasts
                         </label>
 
                         <input
                             type="email"
                             id="email"
                             name="email"
-                            value="{{ old('email') }}"
-                            placeholder="piemers@epasts.lv"
-                            required
-                        >
-
-                    </div>
-
-                    <div class="form-group">
-
-                        <label for="password">
-                            🔒 Parole
-                        </label>
-
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            placeholder="Ievadi savu paroli"
+                            value="{{ old('email', $user->email) }}"
                             required
                         >
 
                     </div>
 
                     <button type="submit">
-                        🔐 Ielogoties
+                        ✓ Saglabāt izmaiņas
                     </button>
 
                 </form>
 
-                <div style="text-align: center; margin-top: 25px;">
+                <br>
 
-                    <p>
-                        Vēl nav konta?
-                    </p>
-
-                    <a href="/register" class="secondary-button">
-                        Izveidot kontu
-                    </a>
-
-                </div>
+                <a href="/profile" class="secondary-button">
+                    Atpakaļ uz profilu
+                </a>
 
             </div>
 

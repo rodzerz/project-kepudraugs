@@ -1,3 +1,4 @@
+```blade id="k3m8qa"
 <!DOCTYPE html>
 <html lang="lv">
 <head>
@@ -5,27 +6,89 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Mans pieskatītāja profils - ĶepuDraugs.lv</title>
+
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>
 
 <body>
 
-    <h1>🐾 ĶepuDraugs.lv</h1>
+    <x-sitter-nav />
 
-    <h2>Mans pieskatītāja profils</h2>
+    <main class="page-container">
 
-    <p><strong>Pilsēta:</strong> {{ $profile->city }}</p>
+        <div class="form-container">
 
-    <p><strong>Par sevi:</strong> {{ $profile->description ?? 'Nav norādīts' }}</p>
+            <div class="card">
 
-    <p><strong>Pieredze:</strong> {{ $profile->experience ?? 'Nav norādīta' }}</p>
+                <div style="text-align: center;">
 
-    <p><strong>Cena par dienu:</strong> {{ $profile->price }} €</p>
+                    <div class="feature-icon">
+                        🐕
+                    </div>
 
-    <p><strong>Pieskatāmie dzīvnieki:</strong> {{ $profile->accepted_animals }}</p>
+                    <p class="subtitle">
+                        🐾 ĶepuDraugs.lv
+                    </p>
 
-    <br>
+                    <h1 class="page-title">
+                        Mans pieskatītāja profils
+                    </h1>
 
-    <a href="/dashboard">Atpakaļ uz paneli</a>
+                    <p class="page-description">
+                        Šo informāciju redz mājdzīvnieku īpašnieki,
+                        kuri meklē pieskatītāju.
+                    </p>
+
+                </div>
+
+                <div style="margin-top: 30px;">
+
+                    <p>
+                        <strong>👤 Vārds</strong><br>
+                        {{ $profile->user->name }}
+                    </p>
+
+                    <p>
+                        <strong>📍 Pilsēta</strong><br>
+                        {{ $profile->city }}
+                    </p>
+
+                    <p>
+                        <strong>💬 Par sevi</strong><br>
+                        {{ $profile->description ?? 'Nav norādīts' }}
+                    </p>
+
+                    <p>
+                        <strong>⭐ Pieredze</strong><br>
+                        {{ $profile->experience ?? 'Nav norādīta' }}
+                    </p>
+
+                    <p>
+                        <strong>💶 Cena</strong><br>
+                        {{ $profile->price }} € / dienā
+                    </p>
+
+                    <p>
+                        <strong>🐾 Pieskatāmie dzīvnieki</strong><br>
+                        {{ $profile->accepted_animals }}
+                    </p>
+
+                </div>
+
+                <div style="margin-top: 30px;">
+
+                    <a href="/sitter-profile/create" class="main-button">
+                        ✏️ Rediģēt profilu
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
 
 </body>
 </html>
+```

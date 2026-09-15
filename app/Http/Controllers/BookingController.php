@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
@@ -92,5 +93,26 @@ class BookingController extends Controller
 
         return redirect('/bookings/sitter')
             ->with('success', 'Rezervācija ir noraidīta!');
+    }
+
+    public function cancel($booking)
+    {
+        $booking = Booking::findOrFail($booking);
+
+        if ($booking->owner_id !== Auth::id()) {
+            abort(403);
+        }
+
+        if ($booking->status !== 'pending') {
+            return redirect('/bookings')
+                ->with('success', 'Šo rezervāciju vairs nevar atcelt!');
+        }
+
+        $booking->update([
+            'status' => 'cancelled',
+        ]);
+
+        return redirect('/bookings')
+            ->with('success', 'Rezervācija ir atcelta!');
     }
 }
