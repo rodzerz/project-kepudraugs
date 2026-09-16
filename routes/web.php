@@ -9,6 +9,7 @@ use App\Http\Controllers\PetController;
 use App\Http\Controllers\SitterProfileController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\MessageController;
 
 Route::get('/', [HomeController::class, 'index']);
 
@@ -73,5 +74,10 @@ Route::post('/bookings/{booking}/reject', [BookingController::class, 'reject'])
     ->middleware('auth');
 
 Route::post('/bookings/{booking}/cancel', [BookingController::class, 'cancel'])
+    ->middleware('auth');
+    Route::get('/bookings/{booking}/messages', [MessageController::class, 'show'])
+    ->middleware('auth');
+
+Route::post('/bookings/{booking}/messages', [MessageController::class, 'store'])
     ->middleware('auth');
 

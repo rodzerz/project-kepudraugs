@@ -1,9 +1,9 @@
 <?php
 
-
 namespace App\Http\Controllers;
 
 use App\Models\Booking;
+use App\Models\Message;
 use App\Models\SitterProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -48,7 +48,7 @@ class BookingController extends Controller
             'message' => 'nullable|string',
         ]);
 
-        Booking::create([
+        $booking = Booking::create([
             'owner_id' => Auth::id(),
             'sitter_id' => $validated['sitter_id'],
             'pet_type' => $validated['pet_type'],
@@ -58,6 +58,16 @@ class BookingController extends Controller
             'message' => $validated['message'] ?? null,
             'status' => 'pending',
         ]);
+
+        if (!empty($validated['message'])) {
+
+            Message::create([
+                'booking_id' => $booking->id,
+                'sender_id' => Auth::id(),
+                'receiver_id' => $validated['sitter_id'],
+                'message' => $validated['message'],
+            ]);
+        }
 
         return redirect('/dashboard')
             ->with('success', 'Rezervācijas pieprasījums veiksmīgi nosūtīts!');

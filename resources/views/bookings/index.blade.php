@@ -1,4 +1,3 @@
-```blade id="document-bookings-owner"
 <!DOCTYPE html>
 <html lang="lv">
 <head>
@@ -8,6 +7,41 @@
     <title>Manas rezervācijas - ĶepuDraugs.lv</title>
 
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+
+    <style>
+        .message-button {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .unread-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+
+            min-width: 22px;
+            height: 22px;
+
+            padding: 0 6px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: var(--danger);
+            color: white;
+
+            border-radius: 50%;
+
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1;
+
+            border: 2px solid var(--white);
+        }
+    </style>
 </head>
 
 <body>
@@ -30,20 +64,30 @@
         </div>
 
         @if (session('success'))
+
             <div class="alert alert-success">
                 <strong>{{ session('success') }}</strong>
             </div>
+
         @endif
 
         @if ($bookings->count() > 0)
 
             @foreach ($bookings as $booking)
 
+                @php
+                    $unreadMessages = $booking->messages()
+                        ->where('receiver_id', auth()->id())
+                        ->whereNull('read_at')
+                        ->count();
+                @endphp
+
                 <div class="card">
 
                     <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap;">
 
                         <div>
+
                             <p class="subtitle">
                                 🐾 Pieskatītājs
                             </p>
@@ -51,6 +95,7 @@
                             <h3>
                                 {{ $booking->sitter->name }}
                             </h3>
+
                         </div>
 
                         @if ($booking->status === 'pending')
@@ -103,26 +148,46 @@
                         {{ $booking->message ?? 'Nav ziņas' }}
                     </p>
 
-                    @if ($booking->status === 'pending')
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 25px;">
 
-                        <form
-                            action="/bookings/{{ $booking->id }}/cancel"
-                            method="POST"
-                            style="margin-top: 25px;"
+                        <a
+                            href="/bookings/{{ $booking->id }}/messages"
+                            class="main-button message-button"
                         >
+                            💬 Sarakste
 
-                            @csrf
+                            @if ($unreadMessages > 0)
 
-                            <button
-                                type="submit"
-                                style="background: var(--danger);"
+                                <span class="unread-badge">
+                                    {{ $unreadMessages }}
+                                </span>
+
+                            @endif
+
+                        </a>
+
+                        @if ($booking->status === 'pending')
+
+                            <form
+                                action="/bookings/{{ $booking->id }}/cancel"
+                                method="POST"
+                                style="margin: 0;"
                             >
-                                Atcelt rezervāciju
-                            </button>
 
-                        </form>
+                                @csrf
 
-                    @endif
+                                <button
+                                    type="submit"
+                                    style="background: var(--danger);"
+                                >
+                                    Atcelt rezervāciju
+                                </button>
+
+                            </form>
+
+                        @endif
+
+                    </div>
 
                 </div>
 
@@ -157,4 +222,3 @@
 
 </body>
 </html>
-```

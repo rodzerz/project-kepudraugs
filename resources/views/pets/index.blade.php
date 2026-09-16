@@ -1,4 +1,4 @@
-```blade
+
 <!DOCTYPE html>
 <html lang="lv">
 <head>
@@ -206,4 +206,4 @@
 
 </body>
 </html>
-```
+

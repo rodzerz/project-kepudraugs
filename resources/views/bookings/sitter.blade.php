@@ -1,4 +1,3 @@
-```blade id="sitter-bookings-page"
 <!DOCTYPE html>
 <html lang="lv">
 <head>
@@ -8,6 +7,41 @@
     <title>Saņemtās rezervācijas - ĶepuDraugs.lv</title>
 
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+
+    <style>
+        .message-button {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .unread-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+
+            min-width: 22px;
+            height: 22px;
+
+            padding: 0 6px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: var(--danger);
+            color: white;
+
+            border-radius: 50%;
+
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1;
+
+            border: 2px solid var(--white);
+        }
+    </style>
 </head>
 
 <body>
@@ -30,20 +64,30 @@
         </div>
 
         @if (session('success'))
+
             <div class="alert alert-success">
                 <strong>{{ session('success') }}</strong>
             </div>
+
         @endif
 
         @if ($bookings->count() > 0)
 
             @foreach ($bookings as $booking)
 
+                @php
+                    $unreadMessages = $booking->messages()
+                        ->where('receiver_id', auth()->id())
+                        ->whereNull('read_at')
+                        ->count();
+                @endphp
+
                 <div class="card">
 
                     <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap;">
 
                         <div>
+
                             <p class="subtitle">
                                 👤 Mājdzīvnieka īpašnieks
                             </p>
@@ -51,6 +95,7 @@
                             <h3>
                                 {{ $booking->owner->name }}
                             </h3>
+
                         </div>
 
                         @if ($booking->status === 'pending')
@@ -103,13 +148,30 @@
                         {{ $booking->message ?? 'Nav ziņas' }}
                     </p>
 
-                    @if ($booking->status === 'pending')
+                    <div style="display: flex; gap: 12px; margin-top: 25px; flex-wrap: wrap;">
 
-                        <div style="display: flex; gap: 12px; margin-top: 25px; flex-wrap: wrap;">
+                        <a
+                            href="/bookings/{{ $booking->id }}/messages"
+                            class="main-button message-button"
+                        >
+                            💬 Sarakste
+
+                            @if ($unreadMessages > 0)
+
+                                <span class="unread-badge">
+                                    {{ $unreadMessages }}
+                                </span>
+
+                            @endif
+
+                        </a>
+
+                        @if ($booking->status === 'pending')
 
                             <form
                                 action="/bookings/{{ $booking->id }}/accept"
                                 method="POST"
+                                style="margin: 0;"
                             >
 
                                 @csrf
@@ -123,6 +185,7 @@
                             <form
                                 action="/bookings/{{ $booking->id }}/reject"
                                 method="POST"
+                                style="margin: 0;"
                             >
 
                                 @csrf
@@ -136,9 +199,9 @@
 
                             </form>
 
-                        </div>
+                        @endif
 
-                    @endif
+                    </div>
 
                 </div>
 
@@ -169,4 +232,3 @@
 
 </body>
 </html>
-```
