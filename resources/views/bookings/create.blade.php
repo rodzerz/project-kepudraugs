@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="lv">
 <head>
@@ -32,16 +31,20 @@
                 </p>
 
                 <div class="alert alert-warning">
+
                     <strong>Pieskatītājs:</strong>
                     {{ $sitterProfile->user->name }}
+
                     <br>
 
                     <strong>Pilsēta:</strong>
                     {{ $sitterProfile->city }}
+
                     <br>
 
                     <strong>Cena:</strong>
                     {{ $sitterProfile->price }} € / dienā
+
                 </div>
 
                 @if ($errors->any())
@@ -49,7 +52,11 @@
                     <div class="alert alert-danger">
 
                         @foreach ($errors->all() as $error)
-                            <p>{{ $error }}</p>
+
+                            @if (!$errors->has('booking_date') || $error !== $errors->first('booking_date'))
+                                <p>{{ $error }}</p>
+                            @endif
+
                         @endforeach
 
                     </div>
@@ -81,6 +88,12 @@
                             required
                         >
 
+                        @error('pet_type')
+                            <p class="error">
+                                {{ $message }}
+                            </p>
+                        @enderror
+
                     </div>
 
                     <div class="form-group">
@@ -94,8 +107,15 @@
                             id="booking_date"
                             name="booking_date"
                             value="{{ old('booking_date') }}"
+                            min="{{ date('Y-m-d') }}"
                             required
                         >
+
+                        @error('booking_date')
+                            <p class="error">
+                                ⚠️ {{ $message }}
+                            </p>
+                        @enderror
 
                     </div>
 
@@ -113,6 +133,12 @@
                             required
                         >
 
+                        @error('start_time')
+                            <p class="error">
+                                ⚠️ {{ $message }}
+                            </p>
+                        @enderror
+
                     </div>
 
                     <div class="form-group">
@@ -129,6 +155,12 @@
                             required
                         >
 
+                        @error('end_time')
+                            <p class="error">
+                                {{ $message }}
+                            </p>
+                        @enderror
+
                     </div>
 
                     <div class="form-group">
@@ -142,6 +174,12 @@
                             name="message"
                             placeholder="Piemēram, svarīga informācija par mājdzīvnieku..."
                         >{{ old('message') }}</textarea>
+
+                        @error('message')
+                            <p class="error">
+                                {{ $message }}
+                            </p>
+                        @enderror
 
                     </div>
 
@@ -165,4 +203,3 @@
 
 </body>
 </html>
-```

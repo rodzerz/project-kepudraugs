@@ -1,4 +1,3 @@
-```blade id="8qk2mf"
 <!DOCTYPE html>
 <html lang="lv">
 <head>
@@ -73,6 +72,45 @@
                             {{ $profile->user->name }}
                         </h3>
 
+                        {{-- VĒRTĒJUMS --}}
+
+                        <div style="margin: 10px 0 20px;">
+
+                            @if ($profile->reviews_count > 0)
+
+                                <div style="font-size: 20px;">
+
+                                    @for ($i = 1; $i <= 5; $i++)
+
+                                        @if ($i <= round($profile->average_rating))
+                                            ⭐
+                                        @else
+                                            ☆
+                                        @endif
+
+                                    @endfor
+
+                                </div>
+
+                                <strong>
+                                    {{ number_format($profile->average_rating, 1) }} / 5
+                                </strong>
+
+                                <small style="color: var(--text-light);">
+                                    ({{ $profile->reviews_count }}
+                                    {{ $profile->reviews_count == 1 ? 'atsauksme' : 'atsauksmes' }})
+                                </small>
+
+                            @else
+
+                                <span style="color: var(--text-light);">
+                                    ⭐ Vēl nav vērtējumu
+                                </span>
+
+                            @endif
+
+                        </div>
+
                         <p>
                             <strong>📍 Pilsēta:</strong><br>
                             {{ $profile->city }}
@@ -138,4 +176,3 @@
 
 </body>
 </html>
-```

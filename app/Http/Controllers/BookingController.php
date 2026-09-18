@@ -42,11 +42,62 @@ class BookingController extends Controller
         $validated = $request->validate([
             'sitter_id' => 'required|exists:users,id',
             'pet_type' => 'required|string|max:255',
-            'booking_date' => 'required|date',
+            'booking_date' => 'required|date|after_or_equal:today',
             'start_time' => 'required',
             'end_time' => 'required|after:start_time',
             'message' => 'nullable|string',
         ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Pārbauda laiku šodienai
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            $validated['booking_date'] === now()->format('Y-m-d') &&
+            $validated['start_time'] <= now()->format('H:i')
+        ) {
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'start_time' =>
+                        'Šodien rezervācijas sākuma laiks nevar būt pagātnē.'
+                ]);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Pārbauda, vai pieskatītājam nav cita rezervācija tajā pašā laikā
+        |--------------------------------------------------------------------------
+        */
+
+        $hasConflict = Booking::where('sitter_id', $validated['sitter_id'])
+            ->where('booking_date', $validated['booking_date'])
+            ->whereIn('status', ['pending', 'accepted'])
+            ->where(function ($query) use ($validated) {
+
+                $query
+                    ->where('start_time', '<', $validated['end_time'])
+                    ->where('end_time', '>', $validated['start_time']);
+
+            })
+            ->exists();
+
+        if ($hasConflict) {
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'booking_date' =>
+                        'Šajā datumā un laikā pieskatītājs jau ir aizņemts.'
+                ]);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Izveido rezervāciju
+        |--------------------------------------------------------------------------
+        */
 
         $booking = Booking::create([
             'owner_id' => Auth::id(),
@@ -59,6 +110,12 @@ class BookingController extends Controller
             'status' => 'pending',
         ]);
 
+        /*
+        |--------------------------------------------------------------------------
+        | Ja īpašnieks pievienoja ziņu, izveido arī sarakstes ziņu
+        |--------------------------------------------------------------------------
+        */
+
         if (!empty($validated['message'])) {
 
             Message::create([
@@ -70,7 +127,10 @@ class BookingController extends Controller
         }
 
         return redirect('/dashboard')
-            ->with('success', 'Rezervācijas pieprasījums veiksmīgi nosūtīts!');
+            ->with(
+                'success',
+                'Rezervācijas pieprasījums veiksmīgi nosūtīts!'
+            );
     }
 
     public function accept($booking)
@@ -115,7 +175,10 @@ class BookingController extends Controller
 
         if ($booking->status !== 'pending') {
             return redirect('/bookings')
-                ->with('success', 'Šo rezervāciju vairs nevar atcelt!');
+                ->with(
+                    'success',
+                    'Šo rezervāciju vairs nevar atcelt!'
+                );
         }
 
         $booking->update([
