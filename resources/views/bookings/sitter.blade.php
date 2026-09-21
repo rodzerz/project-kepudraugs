@@ -1,3 +1,4 @@
+```blade
 <!DOCTYPE html>
 <html lang="lv">
 <head>
@@ -110,6 +111,12 @@
                                 Pieņemta
                             </span>
 
+                        @elseif ($booking->status === 'completed')
+
+                            <span class="status status-accepted">
+                                Pabeigta
+                            </span>
+
                         @elseif ($booking->status === 'rejected')
 
                             <span class="status status-rejected">
@@ -199,6 +206,22 @@
 
                             </form>
 
+                        @elseif ($booking->status === 'accepted')
+
+                            <form
+                                action="/bookings/{{ $booking->id }}/complete"
+                                method="POST"
+                                style="margin: 0;"
+                            >
+
+                                @csrf
+
+                                <button type="submit">
+                                    ✓ Atzīmēt kā pabeigtu
+                                </button>
+
+                            </form>
+
                         @endif
 
                     </div>
@@ -232,3 +255,4 @@
 
 </body>
 </html>
+```

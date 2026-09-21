@@ -1,5 +1,6 @@
 <?php
 
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RegisterController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\SitterProfileController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\ReviewController;
 
 Route::get('/', [HomeController::class, 'index']);
 
@@ -24,7 +26,6 @@ Route::post('/logout', [LoginController::class, 'logout']);
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware('auth');
 
-
 Route::middleware('auth')->group(function () {
 
     Route::get('/pets', [PetController::class, 'index']);
@@ -35,7 +36,6 @@ Route::middleware('auth')->group(function () {
 
 });
 
-
 Route::middleware('auth')->group(function () {
 
     Route::get('/sitter-profile/create', [SitterProfileController::class, 'create']);
@@ -45,7 +45,6 @@ Route::middleware('auth')->group(function () {
 
 });
 
-
 Route::middleware('auth')->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'show']);
@@ -53,7 +52,6 @@ Route::middleware('auth')->group(function () {
     Route::put('/profile', [ProfileController::class, 'update']);
 
 });
-
 
 Route::get('/bookings', [BookingController::class, 'index'])
     ->middleware('auth');
@@ -75,9 +73,19 @@ Route::post('/bookings/{booking}/reject', [BookingController::class, 'reject'])
 
 Route::post('/bookings/{booking}/cancel', [BookingController::class, 'cancel'])
     ->middleware('auth');
-    Route::get('/bookings/{booking}/messages', [MessageController::class, 'show'])
+
+Route::get('/bookings/{booking}/messages', [MessageController::class, 'show'])
     ->middleware('auth');
 
 Route::post('/bookings/{booking}/messages', [MessageController::class, 'store'])
+    ->middleware('auth');
+
+Route::post('/bookings/{booking}/complete', [BookingController::class, 'complete'])
+    ->middleware('auth');
+
+Route::get('/bookings/{booking}/review', [ReviewController::class, 'create'])
+    ->middleware('auth');
+
+Route::post('/bookings/{booking}/review', [ReviewController::class, 'store'])
     ->middleware('auth');
 

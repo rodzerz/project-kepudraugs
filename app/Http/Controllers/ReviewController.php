@@ -20,15 +20,21 @@ class ReviewController extends Controller
         }
 
         // Atsauksmi var pievienot tikai pabeigtai rezervācijai
-        if ($booking->status !== 'accepted') {
+        if ($booking->status !== 'completed') {
             return redirect('/bookings')
-                ->with('success', 'Atsauksmi var pievienot tikai pieņemtai rezervācijai!');
+                ->with(
+                    'success',
+                    'Atsauksmi var pievienot tikai pabeigtai rezervācijai!'
+                );
         }
 
         // Vienai rezervācijai var būt tikai viena atsauksme
         if ($booking->review()->exists()) {
             return redirect('/bookings')
-                ->with('success', 'Šai rezervācijai atsauksme jau ir pievienota!');
+                ->with(
+                    'success',
+                    'Šai rezervācijai atsauksme jau ir pievienota!'
+                );
         }
 
         return view('reviews.create', compact('booking'));
@@ -43,16 +49,22 @@ class ReviewController extends Controller
             abort(403);
         }
 
-        // Atsauksmi var pievienot tikai pieņemtai rezervācijai
-        if ($booking->status !== 'accepted') {
+        // Atsauksmi var pievienot tikai pabeigtai rezervācijai
+        if ($booking->status !== 'completed') {
             return redirect('/bookings')
-                ->with('success', 'Atsauksmi var pievienot tikai pieņemtai rezervācijai!');
+                ->with(
+                    'success',
+                    'Atsauksmi var pievienot tikai pabeigtai rezervācijai!'
+                );
         }
 
         // Pārbauda, vai atsauksme jau nepastāv
         if ($booking->review()->exists()) {
             return redirect('/bookings')
-                ->with('success', 'Šai rezervācijai atsauksme jau ir pievienota!');
+                ->with(
+                    'success',
+                    'Šai rezervācijai atsauksme jau ir pievienota!'
+                );
         }
 
         $validated = $request->validate([
@@ -69,6 +81,10 @@ class ReviewController extends Controller
         ]);
 
         return redirect('/bookings')
-            ->with('success', 'Vērtējums un atsauksme veiksmīgi pievienoti!');
+            ->with(
+                'success',
+                'Vērtējums un atsauksme veiksmīgi pievienoti!'
+            );
     }
 }
+

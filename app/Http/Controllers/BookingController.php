@@ -165,6 +165,33 @@ class BookingController extends Controller
             ->with('success', 'Rezervācija ir noraidīta!');
     }
 
+    public function complete($booking)
+    {
+        $booking = Booking::findOrFail($booking);
+
+        if ($booking->sitter_id !== Auth::id()) {
+            abort(403);
+        }
+
+        if ($booking->status !== 'accepted') {
+            return redirect('/bookings/sitter')
+                ->with(
+                    'success',
+                    'Šo rezervāciju nevar atzīmēt kā pabeigtu!'
+                );
+        }
+
+        $booking->update([
+            'status' => 'completed',
+        ]);
+
+        return redirect('/bookings/sitter')
+            ->with(
+                'success',
+                'Rezervācija ir atzīmēta kā pabeigta!'
+            );
+    }
+
     public function cancel($booking)
     {
         $booking = Booking::findOrFail($booking);
@@ -189,3 +216,4 @@ class BookingController extends Controller
             ->with('success', 'Rezervācija ir atcelta!');
     }
 }
+
