@@ -12,6 +12,7 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\AdminController;
 
 Route::get('/', [HomeController::class, 'index']);
 
@@ -87,5 +88,10 @@ Route::get('/bookings/{booking}/review', [ReviewController::class, 'create'])
     ->middleware('auth');
 
 Route::post('/bookings/{booking}/review', [ReviewController::class, 'store'])
+    ->middleware('auth');
+
+    Route::get('/admin', [AdminController::class, 'index'])
+    ->middleware('auth');
+    Route::post('/admin/users/{user}/toggle-block', [AdminController::class, 'toggleBlock'])
     ->middleware('auth');
 

@@ -20,9 +20,21 @@ class LoginController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
+
+            // Pārbauda, vai lietotājs nav bloķēts
+            if (Auth::user()->is_blocked) {
+                Auth::logout();
+
+                return back()
+                    ->withErrors([
+                        'email' => 'Jūsu konts ir bloķēts. Sazinieties ar administratoru.',
+                    ])
+                    ->withInput();
+            }
+
             $request->session()->regenerate();
 
-           return redirect('/dashboard');
+            return redirect('/dashboard');
         }
 
         return back()->withErrors([
