@@ -1,6 +1,5 @@
 <?php
 
-
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RegisterController;
@@ -19,7 +18,9 @@ Route::get('/', [HomeController::class, 'index']);
 Route::get('/register', [RegisterController::class, 'show']);
 Route::post('/register', [RegisterController::class, 'register']);
 
-Route::get('/login', [LoginController::class, 'show']);
+Route::get('/login', [LoginController::class, 'show'])
+    ->name('login');
+
 Route::post('/login', [LoginController::class, 'login']);
 
 Route::post('/logout', [LoginController::class, 'logout']);
@@ -90,8 +91,17 @@ Route::get('/bookings/{booking}/review', [ReviewController::class, 'create'])
 Route::post('/bookings/{booking}/review', [ReviewController::class, 'store'])
     ->middleware('auth');
 
-    Route::get('/admin', [AdminController::class, 'index'])
-    ->middleware('auth');
-    Route::post('/admin/users/{user}/toggle-block', [AdminController::class, 'toggleBlock'])
+Route::get('/admin', [AdminController::class, 'index'])
     ->middleware('auth');
 
+Route::post('/admin/users/{user}/toggle-block', [AdminController::class, 'toggleBlock'])
+    ->middleware('auth');
+
+Route::get('/admin/bookings', [AdminController::class, 'bookings'])
+    ->middleware('auth');
+    
+    Route::get('/admin/pets', [AdminController::class, 'pets'])
+    ->middleware('auth');
+
+Route::delete('/admin/pets/{pet}', [AdminController::class, 'deletePet'])
+    ->middleware('auth');

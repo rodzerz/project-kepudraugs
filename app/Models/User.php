@@ -11,8 +11,17 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'role'])]
-#[Hidden(['password', 'remember_token'])]
+#[Fillable([
+    'name',
+    'email',
+    'password',
+    'role',
+    'is_blocked',
+])]
+#[Hidden([
+    'password',
+    'remember_token',
+])]
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
@@ -26,21 +35,23 @@ class User extends Authenticatable
     {
         return $this->hasOne(SitterProfile::class);
     }
-    public function ownerBookings(): HasMany
-{
-    return $this->hasMany(Booking::class, 'owner_id');
-}
 
-public function sitterBookings(): HasMany
-{
-    return $this->hasMany(Booking::class, 'sitter_id');
-}
+    public function ownerBookings(): HasMany
+    {
+        return $this->hasMany(Booking::class, 'owner_id');
+    }
+
+    public function sitterBookings(): HasMany
+    {
+        return $this->hasMany(Booking::class, 'sitter_id');
+    }
 
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_blocked' => 'boolean',
         ];
     }
 }

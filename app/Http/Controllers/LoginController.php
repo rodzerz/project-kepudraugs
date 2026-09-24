@@ -21,7 +21,6 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
 
-            // Pārbauda, vai lietotājs nav bloķēts
             if (Auth::user()->is_blocked) {
                 Auth::logout();
 
@@ -34,12 +33,20 @@ class LoginController extends Controller
 
             $request->session()->regenerate();
 
+            // Administratoru nosūta uz administratora paneli
+            if (Auth::user()->role === 'admin') {
+                return redirect('/admin');
+            }
+
+            // Pārējos lietotājus nosūta uz parasto paneli
             return redirect('/dashboard');
         }
 
-        return back()->withErrors([
-            'email' => 'Nepareizs e-pasts vai parole.',
-        ])->withInput();
+        return back()
+            ->withErrors([
+                'email' => 'Nepareizs e-pasts vai parole.',
+            ])
+            ->withInput();
     }
 
     public function logout(Request $request)
