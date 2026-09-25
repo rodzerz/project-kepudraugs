@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="lv">
 <head>
@@ -34,23 +33,17 @@
             position: absolute;
             top: 6px;
             right: 6px;
-
             width: 28px;
             height: 28px;
-
             padding: 0;
-
             border-radius: 50%;
             background: var(--danger);
             color: white;
-
             display: flex;
             align-items: center;
             justify-content: center;
-
             font-size: 18px;
             line-height: 1;
-
             cursor: pointer;
         }
 
@@ -63,6 +56,18 @@
             margin-top: 8px;
             color: var(--text-light);
             font-size: 14px;
+        }
+
+        /* Paslēpj bultiņas number laukiem */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield;
+            appearance: textfield;
         }
 
         @media (max-width: 700px) {
@@ -176,6 +181,7 @@
                             value="{{ old('age') }}"
                             min="0"
                             placeholder="Piemēram, 3"
+                            onwheel="this.blur()"
                         >
 
                     </div>
@@ -194,6 +200,7 @@
                             min="0"
                             step="0.01"
                             placeholder="Piemēram, 12.5"
+                            onwheel="this.blur()"
                         >
 
                     </div>
