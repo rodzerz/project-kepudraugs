@@ -7,104 +7,6 @@
     <title>Sarakste - ĶepuDraugs.lv</title>
 
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-
-    <style>
-        .conversation {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .booking-info {
-            margin-bottom: 25px;
-        }
-
-        .messages {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 25px;
-        }
-
-        .message {
-            max-width: 75%;
-            padding: 12px 16px;
-            border-radius: 14px;
-        }
-
-        .message-sent {
-            align-self: flex-end;
-            background: var(--primary);
-            color: white;
-            border-bottom-right-radius: 4px;
-        }
-
-        .message-received {
-            align-self: flex-start;
-            background: var(--primary-light);
-            color: var(--text);
-            border-bottom-left-radius: 4px;
-        }
-
-        .message-name {
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-
-        .message-text {
-            margin: 0;
-            white-space: pre-wrap;
-            overflow-wrap: anywhere;
-        }
-
-        .message-time {
-            display: block;
-            margin-top: 6px;
-            font-size: 12px;
-            opacity: 0.7;
-        }
-
-        .message-form {
-            display: flex;
-            gap: 12px;
-            align-items: flex-end;
-        }
-
-        .message-form textarea {
-            min-height: 80px;
-            resize: vertical;
-            margin: 0;
-        }
-
-        .message-form button {
-            width: auto;
-            min-width: 150px;
-            margin: 0;
-        }
-
-        .no-messages {
-            text-align: center;
-            padding: 30px;
-            color: var(--text-light);
-            background: var(--primary-light);
-            border-radius: 14px;
-        }
-
-        @media (max-width: 600px) {
-            .message {
-                max-width: 90%;
-            }
-
-            .message-form {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .message-form button {
-                width: 100%;
-            }
-        }
-    </style>
 </head>
 
 <body>
@@ -119,41 +21,158 @@
 
     @endif
 
+
     <main class="page-container">
 
         <div class="conversation">
 
-            <div class="card booking-info">
+            <!-- LAPAS GALVENE -->
 
-                <p class="subtitle">💬 Sarakste</p>
+            <section class="conversation-header">
 
-                <h1 class="page-title">
-                    Sarakste par rezervāciju
-                </h1>
+                <div>
 
-                <p class="page-description">
-                    Šeit vari sazināties ar otru rezervācijas dalībnieku
-                    un vienoties par tikšanās vietu, laiku un citu svarīgu informāciju.
-                </p>
+                    <p class="section-label">
+                        Rezervācijas sarakste
+                    </p>
 
-                <p>
-                    <strong>Mājdzīvnieks:</strong>
-                    {{ $booking->pet_type }}
-                </p>
+                    <h1 class="page-title">
+                        Ziņas
+                    </h1>
 
-                <p>
-                    <strong>Datums:</strong>
-                    {{ $booking->booking_date }}
-                </p>
+                    <p class="page-description">
+                        Sazinies ar otru rezervācijas dalībnieku un
+                        vienojies par svarīgāko informāciju.
+                    </p>
 
-                <p>
-                    <strong>Laiks:</strong>
-                    {{ $booking->start_time }}–{{ $booking->end_time }}
-                </p>
+                </div>
 
-            </div>
 
-            <div class="card">
+                @if (auth()->user()->role === 'owner')
+
+                    <a
+                        href="/bookings"
+                        class="secondary-button"
+                    >
+                        ← Atpakaļ
+                    </a>
+
+                @else
+
+                    <a
+                        href="/bookings/sitter"
+                        class="secondary-button"
+                    >
+                        ← Atpakaļ
+                    </a>
+
+                @endif
+
+            </section>
+
+
+            <!-- REZERVĀCIJAS INFORMĀCIJA -->
+
+            <section class="conversation-booking-card">
+
+                <div class="conversation-booking-heading">
+
+                    <div class="conversation-booking-icon">
+                        🐾
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Sarakste par rezervāciju
+                        </span>
+
+                        <strong>
+                            {{ $booking->pet_type }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="conversation-booking-details">
+
+                    <div class="conversation-booking-detail">
+
+                        <span class="conversation-detail-icon">
+                            📅
+                        </span>
+
+                        <div>
+
+                            <span>
+                                Datums
+                            </span>
+
+                            <strong>
+                                {{ \Carbon\Carbon::parse($booking->booking_date)->format('d.m.Y.') }}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="conversation-booking-detail">
+
+                        <span class="conversation-detail-icon">
+                            🕐
+                        </span>
+
+                        <div>
+
+                            <span>
+                                Laiks
+                            </span>
+
+                            <strong>
+                                {{ substr($booking->start_time, 0, 5) }}
+                                –
+                                {{ substr($booking->end_time, 0, 5) }}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- SARAKSTE -->
+
+            <section class="conversation-card">
+
+                <div class="conversation-card-heading">
+
+                    <div>
+
+                        <p class="section-label">
+                            Sarakste
+                        </p>
+
+                        <h2>
+                            Ziņas
+                        </h2>
+
+                    </div>
+
+                    <span class="conversation-message-count">
+                        {{ $messages->count() }}
+                        {{ $messages->count() == 1 ? 'ziņa' : 'ziņas' }}
+                    </span>
+
+                </div>
+
+
+                <!-- ZIŅAS -->
 
                 <div class="messages">
 
@@ -161,108 +180,142 @@
 
                         @if ($message->sender_id === auth()->id())
 
-                            <div class="message message-sent">
+                            <!-- NOSŪTĪTĀ ZIŅA -->
 
-                                <div class="message-name">
-                                    Tu
+                            <div class="message-row message-row-sent">
+
+                                <div class="message message-sent">
+
+                                    <div class="message-name">
+                                        Tu
+                                    </div>
+
+                                    <p class="message-text">
+                                        {{ $message->message }}
+                                    </p>
+
+                                    <span class="message-time">
+                                        {{ $message->created_at->format('d.m.Y. H:i') }}
+                                    </span>
+
                                 </div>
-
-                                <p class="message-text">
-                                    {{ $message->message }}
-                                </p>
-
-                                <span class="message-time">
-                                    {{ $message->created_at->format('d.m.Y H:i') }}
-                                </span>
 
                             </div>
 
                         @else
 
-                            <div class="message message-received">
+                            <!-- SAŅEMTĀ ZIŅA -->
 
-                                <div class="message-name">
-                                    {{ $message->sender->name }}
+                            <div class="message-row message-row-received">
+
+                                <div class="message-avatar">
+                                    {{ mb_strtoupper(mb_substr($message->sender->name, 0, 1)) }}
                                 </div>
 
-                                <p class="message-text">
-                                    {{ $message->message }}
-                                </p>
 
-                                <span class="message-time">
-                                    {{ $message->created_at->format('d.m.Y H:i') }}
-                                </span>
+                                <div class="message message-received">
+
+                                    <div class="message-name">
+                                        {{ $message->sender->name }}
+                                    </div>
+
+                                    <p class="message-text">
+                                        {{ $message->message }}
+                                    </p>
+
+                                    <span class="message-time">
+                                        {{ $message->created_at->format('d.m.Y. H:i') }}
+                                    </span>
+
+                                </div>
 
                             </div>
 
                         @endif
 
+
                     @empty
 
-                        <div class="no-messages">
-                            💬 Šajā sarakstē vēl nav ziņu.
+                        <!-- NAV ZIŅU -->
+
+                        <div class="conversation-empty">
+
+                            <div class="conversation-empty-icon">
+                                💬
+                            </div>
+
+                            <h3>
+                                Sarakste vēl nav sākta
+                            </h3>
+
+                            <p>
+                                Nosūti pirmo ziņu, lai vienotos par
+                                rezervācijas detaļām.
+                            </p>
+
                         </div>
 
                     @endforelse
 
                 </div>
 
-                <form
-                    action="/bookings/{{ $booking->id }}/messages"
-                    method="POST"
-                    class="message-form"
-                >
 
-                    @csrf
+                <!-- ZIŅAS NOSŪTĪŠANA -->
 
-                    <div style="flex: 1;">
+                <div class="message-compose">
 
-                        <label for="message">
-                            Tava ziņa
-                        </label>
+                    <form
+                        action="/bookings/{{ $booking->id }}/messages"
+                        method="POST"
+                        class="message-form"
+                    >
 
-                        <textarea
-                            id="message"
-                            name="message"
-                            placeholder="Uzraksti ziņu..."
-                            required
-                        ></textarea>
+                        @csrf
 
-                        @error('message')
 
-                            <p class="alert alert-danger">
-                                {{ $message }}
-                            </p>
+                        <div class="message-input-wrapper">
 
-                        @enderror
+                            <label for="message">
+                                Tava ziņa
+                            </label>
 
-                    </div>
+                            <textarea
+                                id="message"
+                                name="message"
+                                placeholder="Uzraksti ziņu..."
+                                required
+                            >{{ old('message') }}</textarea>
 
-                    <button type="submit">
-                        📤 Nosūtīt
-                    </button>
 
-                </form>
+                            @error('message')
 
-            </div>
+                                <p class="field-error">
+                                    {{ $message }}
+                                </p>
 
-            <div style="margin-top: 20px;">
+                            @enderror
 
-                @if (auth()->user()->role === 'owner')
+                        </div>
 
-                    <a href="/bookings" class="secondary-button">
-                        ← Atpakaļ uz rezervācijām
-                    </a>
 
-                @else
+                        <button
+                            type="submit"
+                            class="message-send-button"
+                        >
+                            <span>
+                                Nosūtīt
+                            </span>
 
-                    <a href="/bookings/sitter" class="secondary-button">
-                        ← Atpakaļ uz rezervācijām
-                    </a>
+                            <span>
+                                ➜
+                            </span>
+                        </button>
 
-                @endif
+                    </form>
 
-            </div>
+                </div>
+
+            </section>
 
         </div>
 

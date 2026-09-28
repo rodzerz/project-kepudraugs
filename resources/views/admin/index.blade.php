@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="lv">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,285 +7,469 @@
     <title>Administrators - ĶepuDraugs.lv</title>
 
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-
-    <style>
-        .admin-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 15px;
-            margin: 25px 0 30px;
-        }
-
-        .admin-stat-card {
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: var(--shadow);
-        }
-
-        .admin-stat-icon {
-            font-size: 28px;
-            margin-bottom: 8px;
-        }
-
-        .admin-stat-number {
-            font-size: 30px;
-            font-weight: 700;
-            color: var(--primary);
-            margin: 5px 0;
-        }
-
-        .admin-stat-title {
-            color: var(--text-light);
-            margin: 0;
-        }
-
-        .booking-stats {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 15px;
-        }
-    </style>
 </head>
 
 <body>
 
+    <!-- ADMINISTRATORA NAVIGĀCIJA -->
+
+    <header class="header admin-header">
+
+        <div class="header-content">
+
+            <a href="/admin" class="logo">
+
+                <span class="logo-icon">
+                    🐾
+                </span>
+
+                <span>
+                    ĶepuDraugs.lv
+                </span>
+
+                <span class="admin-logo-badge">
+                    Admin
+                </span>
+
+            </a>
+
+
+            <nav class="main-nav">
+
+                <a
+                    href="/admin"
+                    class="active"
+                >
+                    Lietotāji
+                </a>
+
+                <a href="/admin/bookings">
+                    Rezervācijas
+                </a>
+
+                <a href="/admin/pets">
+                    Mājdzīvnieki
+                </a>
+
+
+                <form
+                    action="/logout"
+                    method="POST"
+                    class="logout-form"
+                >
+
+                    @csrf
+
+                    <button
+                        type="submit"
+                        class="logout-button"
+                    >
+                        Iziet
+                    </button>
+
+                </form>
+
+            </nav>
+
+        </div>
+
+    </header>
+
+
     <main class="page-container">
 
-        <div>
-            <p class="subtitle">
-                🐾 Administrēšana
-            </p>
+        <!-- GALVENE -->
 
-            <h1 class="page-title">
-                ĶepuDraugs.lv administrēšana
-            </h1>
+        <section class="admin-page-header">
 
-            <p class="page-description">
-                Sveiki, {{ Auth::user()->name }}!
-            </p>
-        </div>
+            <div>
 
-        {{-- Administratora navigācija --}}
-        <div style="
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 30px;
-        ">
+                <p class="section-label">
+                    Administratora panelis
+                </p>
 
-            <a href="/admin" class="main-button">
-                👥 Lietotāji
-            </a>
+                <h1 class="page-title">
+                    Sistēmas pārvaldība
+                </h1>
 
-            <a href="/admin/bookings" class="main-button">
-                📅 Rezervācijas
-            </a>
+                <p class="page-description">
+                    Sveiks, {{ Auth::user()->name }}!
+                    Šeit vari pārraudzīt sistēmas statistiku,
+                    lietotājus un rezervāciju aktivitāti.
+                </p>
 
-            <a href="/admin/pets" class="main-button">
-                🐕 Mājdzīvnieki
-            </a>
+            </div>
 
-            <form
-                action="/logout"
-                method="POST"
-                style="margin: 0;"
-            >
-                @csrf
 
-                <button type="submit">
-                    Iziet
-                </button>
-            </form>
+            <div class="admin-page-header-icon">
+                ⚙️
+            </div>
 
-        </div>
+        </section>
 
-        {{-- Veiksmīgs paziņojums --}}
+
+        <!-- PAZIŅOJUMI -->
+
         @if (session('success'))
 
             <div class="alert alert-success">
+
                 <strong>
                     {{ session('success') }}
                 </strong>
+
             </div>
 
         @endif
 
-        {{-- Kļūdas paziņojums --}}
+
         @if (session('error'))
 
-            <div class="alert">
+            <div class="alert alert-danger">
+
                 <strong>
                     {{ session('error') }}
                 </strong>
+
             </div>
 
         @endif
 
 
-        {{-- STATISTIKA --}}
-        <h2>
-            📊 Sistēmas statistika
-        </h2>
+        <!-- STATISTIKA -->
 
-        <div class="admin-stats">
+        <section class="admin-section">
 
-            <div class="admin-stat-card">
-                <div class="admin-stat-icon">
-                    👥
+            <div class="admin-section-heading">
+
+                <div>
+
+                    <p class="section-label">
+                        Pārskats
+                    </p>
+
+                    <h2>
+                        Sistēmas statistika
+                    </h2>
+
                 </div>
 
-                <div class="admin-stat-number">
-                    {{ $totalUsers }}
-                </div>
-
-                <p class="admin-stat-title">
-                    Lietotāji
-                </p>
             </div>
 
 
-            <div class="admin-stat-card">
-                <div class="admin-stat-icon">
-                    🏠
+            <div class="admin-stats-grid">
+
+                <!-- LIETOTĀJI -->
+
+                <article class="admin-stat-card">
+
+                    <div class="admin-stat-icon">
+                        👥
+                    </div>
+
+                    <div>
+
+                        <strong class="admin-stat-number">
+                            {{ $totalUsers }}
+                        </strong>
+
+                        <span class="admin-stat-title">
+                            Lietotāji
+                        </span>
+
+                    </div>
+
+                </article>
+
+
+                <!-- ĪPAŠNIEKI -->
+
+                <article class="admin-stat-card">
+
+                    <div class="admin-stat-icon">
+                        🏠
+                    </div>
+
+                    <div>
+
+                        <strong class="admin-stat-number">
+                            {{ $totalOwners }}
+                        </strong>
+
+                        <span class="admin-stat-title">
+                            Īpašnieki
+                        </span>
+
+                    </div>
+
+                </article>
+
+
+                <!-- PIESKATĪTĀJI -->
+
+                <article class="admin-stat-card">
+
+                    <div class="admin-stat-icon">
+                        🐾
+                    </div>
+
+                    <div>
+
+                        <strong class="admin-stat-number">
+                            {{ $totalSitters }}
+                        </strong>
+
+                        <span class="admin-stat-title">
+                            Pieskatītāji
+                        </span>
+
+                    </div>
+
+                </article>
+
+
+                <!-- BLOĶĒTIE -->
+
+                <article class="admin-stat-card">
+
+                    <div class="admin-stat-icon admin-stat-icon-danger">
+                        🚫
+                    </div>
+
+                    <div>
+
+                        <strong class="admin-stat-number">
+                            {{ $blockedUsers }}
+                        </strong>
+
+                        <span class="admin-stat-title">
+                            Bloķēti lietotāji
+                        </span>
+
+                    </div>
+
+                </article>
+
+
+                <!-- REZERVĀCIJAS -->
+
+                <article class="admin-stat-card">
+
+                    <div class="admin-stat-icon">
+                        📅
+                    </div>
+
+                    <div>
+
+                        <strong class="admin-stat-number">
+                            {{ $totalBookings }}
+                        </strong>
+
+                        <span class="admin-stat-title">
+                            Rezervācijas
+                        </span>
+
+                    </div>
+
+                </article>
+
+
+                <!-- PABEIGTĀS -->
+
+                <article class="admin-stat-card">
+
+                    <div class="admin-stat-icon admin-stat-icon-success">
+                        ✓
+                    </div>
+
+                    <div>
+
+                        <strong class="admin-stat-number">
+                            {{ $completedBookings }}
+                        </strong>
+
+                        <span class="admin-stat-title">
+                            Pabeigtas rezervācijas
+                        </span>
+
+                    </div>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- REZERVĀCIJU STATUSI -->
+
+        <section class="admin-section admin-booking-status-section">
+
+            <div class="admin-section-heading">
+
+                <div>
+
+                    <p class="section-label">
+                        Rezervācijas
+                    </p>
+
+                    <h2>
+                        Rezervāciju statusi
+                    </h2>
+
+                    <p>
+                        Rezervāciju sadalījums pēc to
+                        pašreizējā statusa.
+                    </p>
+
                 </div>
 
-                <div class="admin-stat-number">
-                    {{ $totalOwners }}
-                </div>
 
-                <p class="admin-stat-title">
-                    Īpašnieki
-                </p>
+                <a
+                    href="/admin/bookings"
+                    class="secondary-button"
+                >
+                    Skatīt visas rezervācijas
+                </a>
+
             </div>
 
 
-            <div class="admin-stat-card">
-                <div class="admin-stat-icon">
-                    🐾
+            <div class="admin-status-grid">
+
+                <div class="admin-status-card">
+
+                    <span class="status status-pending">
+                        Gaida
+                    </span>
+
+                    <strong>
+                        {{ $pendingBookings }}
+                    </strong>
+
+                    <span>
+                        rezervācijas
+                    </span>
+
                 </div>
 
-                <div class="admin-stat-number">
-                    {{ $totalSitters }}
+
+                <div class="admin-status-card">
+
+                    <span class="status status-accepted">
+                        Pieņemtas
+                    </span>
+
+                    <strong>
+                        {{ $acceptedBookings }}
+                    </strong>
+
+                    <span>
+                        rezervācijas
+                    </span>
+
                 </div>
 
-                <p class="admin-stat-title">
-                    Pieskatītāji
-                </p>
+
+                <div class="admin-status-card">
+
+                    <span class="status status-completed">
+                        Pabeigtas
+                    </span>
+
+                    <strong>
+                        {{ $completedBookings }}
+                    </strong>
+
+                    <span>
+                        rezervācijas
+                    </span>
+
+                </div>
+
+
+                <div class="admin-status-card">
+
+                    <span class="status status-rejected">
+                        Noraidītas
+                    </span>
+
+                    <strong>
+                        {{ $rejectedBookings }}
+                    </strong>
+
+                    <span>
+                        rezervācijas
+                    </span>
+
+                </div>
+
+
+                <div class="admin-status-card">
+
+                    <span class="status status-cancelled">
+                        Atceltas
+                    </span>
+
+                    <strong>
+                        {{ $cancelledBookings }}
+                    </strong>
+
+                    <span>
+                        rezervācijas
+                    </span>
+
+                </div>
+
             </div>
 
+        </section>
 
-            <div class="admin-stat-card">
-                <div class="admin-stat-icon">
-                    🚫
+
+        <!-- LIETOTĀJI -->
+
+        <section class="admin-section">
+
+            <div class="admin-section-heading">
+
+                <div>
+
+                    <p class="section-label">
+                        Kontu pārvaldība
+                    </p>
+
+                    <h2>
+                        Reģistrētie lietotāji
+                    </h2>
+
+                    <p>
+                        Apskati sistēmā reģistrētos lietotājus
+                        un nepieciešamības gadījumā bloķē vai
+                        atbloķē viņu kontus.
+                    </p>
+
                 </div>
 
-                <div class="admin-stat-number">
-                    {{ $blockedUsers }}
-                </div>
 
-                <p class="admin-stat-title">
-                    Bloķēti lietotāji
-                </p>
-            </div>
-
-
-            <div class="admin-stat-card">
-                <div class="admin-stat-icon">
-                    📅
-                </div>
-
-                <div class="admin-stat-number">
-                    {{ $totalBookings }}
-                </div>
-
-                <p class="admin-stat-title">
-                    Rezervācijas
-                </p>
-            </div>
-
-
-            <div class="admin-stat-card">
-                <div class="admin-stat-icon">
-                    ✅
-                </div>
-
-                <div class="admin-stat-number">
-                    {{ $completedBookings }}
-                </div>
-
-                <p class="admin-stat-title">
-                    Pabeigtas rezervācijas
-                </p>
-            </div>
-
-        </div>
-
-
-        {{-- REZERVĀCIJU STATUSU STATISTIKA --}}
-        <div class="card">
-
-            <h2>
-                📅 Rezervāciju statusi
-            </h2>
-
-            <p class="page-description">
-                Rezervāciju sadalījums pēc to pašreizējā statusa.
-            </p>
-
-            <div class="booking-stats">
-
-                <span class="status status-pending">
-                    Gaida: {{ $pendingBookings }}
+                <span class="admin-results-count">
+                    {{ $users->count() }}
+                    {{ $users->count() == 1 ? 'lietotājs' : 'lietotāji' }}
                 </span>
 
-                <span class="status status-accepted">
-                    Pieņemtas: {{ $acceptedBookings }}
-                </span>
-
-                <span class="status status-accepted">
-                    Pabeigtas: {{ $completedBookings }}
-                </span>
-
-                <span class="status status-rejected">
-                    Noraidītas: {{ $rejectedBookings }}
-                </span>
-
-                <span class="status status-cancelled">
-                    Atceltas: {{ $cancelledBookings }}
-                </span>
-
             </div>
 
-        </div>
-
-
-        {{-- LIETOTĀJU TABULA --}}
-        <div class="card">
-
-            <h2>
-                👥 Reģistrētie lietotāji
-            </h2>
-
-            <p class="page-description">
-                Šeit vari apskatīt sistēmā reģistrētos lietotājus
-                un bloķēt vai atbloķēt viņu kontus.
-            </p>
 
             @if ($users->count() > 0)
 
-                <div style="overflow-x: auto;">
+                <div class="admin-table-wrapper">
 
-                    <table style="width: 100%;">
+                    <table class="admin-table">
 
                         <thead>
 
                             <tr>
                                 <th>ID</th>
-                                <th>Vārds</th>
+                                <th>Lietotājs</th>
                                 <th>E-pasts</th>
                                 <th>Loma</th>
                                 <th>Reģistrēts</th>
@@ -296,67 +479,110 @@
 
                         </thead>
 
+
                         <tbody>
 
                             @foreach ($users as $user)
 
                                 <tr>
 
-                                    <td>
-                                        {{ $user->id }}
-                                    </td>
+                                    <!-- ID -->
 
                                     <td>
-                                        {{ $user->name }}
+                                        <span class="admin-user-id">
+                                            #{{ $user->id }}
+                                        </span>
                                     </td>
+
+
+                                    <!-- LIETOTĀJS -->
+
+                                    <td>
+
+                                        <div class="admin-user-cell">
+
+                                            <div class="admin-user-avatar">
+                                                {{ mb_strtoupper(mb_substr($user->name, 0, 1)) }}
+                                            </div>
+
+                                            <strong>
+                                                {{ $user->name }}
+                                            </strong>
+
+                                        </div>
+
+                                    </td>
+
+
+                                    <!-- E-PASTS -->
 
                                     <td>
                                         {{ $user->email }}
                                     </td>
 
+
+                                    <!-- LOMA -->
+
                                     <td>
 
                                         @if ($user->role === 'admin')
 
-                                            Administrators
+                                            <span class="admin-role-badge admin-role-admin">
+                                                Administrators
+                                            </span>
 
                                         @elseif ($user->role === 'owner')
 
-                                            Īpašnieks
+                                            <span class="admin-role-badge">
+                                                Īpašnieks
+                                            </span>
 
                                         @elseif ($user->role === 'sitter')
 
-                                            Pieskatītājs
+                                            <span class="admin-role-badge">
+                                                Pieskatītājs
+                                            </span>
 
                                         @else
 
-                                            {{ $user->role }}
+                                            <span class="admin-role-badge">
+                                                {{ $user->role }}
+                                            </span>
 
                                         @endif
 
                                     </td>
 
+
+                                    <!-- REĢISTRĀCIJAS DATUMS -->
+
                                     <td>
-                                        {{ $user->created_at->format('d.m.Y') }}
+                                        {{ $user->created_at->format('d.m.Y.') }}
                                     </td>
+
+
+                                    <!-- STATUSS -->
 
                                     <td>
 
                                         @if ($user->is_blocked)
 
                                             <span class="status status-rejected">
-                                                🚫 Bloķēts
+                                                Bloķēts
                                             </span>
 
                                         @else
 
                                             <span class="status status-accepted">
-                                                ✅ Aktīvs
+                                                Aktīvs
                                             </span>
 
                                         @endif
 
                                     </td>
+
+
+                                    <!-- DARBĪBA -->
 
                                     <td>
 
@@ -365,14 +591,18 @@
                                             <form
                                                 action="/admin/users/{{ $user->id }}/toggle-block"
                                                 method="POST"
-                                                style="margin: 0;"
+                                                class="admin-user-action-form"
                                             >
 
                                                 @csrf
 
+
                                                 @if ($user->is_blocked)
 
-                                                    <button type="submit">
+                                                    <button
+                                                        type="submit"
+                                                        class="admin-unblock-button"
+                                                    >
                                                         🔓 Atbloķēt
                                                     </button>
 
@@ -380,7 +610,8 @@
 
                                                     <button
                                                         type="submit"
-                                                        style="background: var(--danger);"
+                                                        class="admin-block-button"
+                                                        onclick="return confirm('Vai tiešām vēlaties bloķēt šo lietotāju?');"
                                                     >
                                                         🚫 Bloķēt
                                                     </button>
@@ -391,8 +622,8 @@
 
                                         @else
 
-                                            <span class="status status-accepted">
-                                                👑 Administrators
+                                            <span class="admin-current-user">
+                                                👑 Tavs konts
                                             </span>
 
                                         @endif
@@ -409,18 +640,30 @@
 
                 </div>
 
+
             @else
 
-                <p>
-                    Nav reģistrētu lietotāju.
-                </p>
+                <div class="admin-empty-state">
+
+                    <div class="empty-state-icon">
+                        👥
+                    </div>
+
+                    <h3>
+                        Nav reģistrētu lietotāju
+                    </h3>
+
+                    <p>
+                        Sistēmā pašlaik nav lietotāju, ko attēlot.
+                    </p>
+
+                </div>
 
             @endif
 
-        </div>
+        </section>
 
     </main>
 
 </body>
-
 </html>

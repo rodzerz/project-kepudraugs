@@ -12,6 +12,11 @@ class BookingController extends Controller
 {
     public function create($sitter)
     {
+        // Tikai owner drīkst veidot rezervāciju
+        if (Auth::user()->role !== 'owner') {
+            abort(403);
+        }
+
         $sitterProfile = SitterProfile::with('user')->findOrFail($sitter);
 
         return view('bookings.create', compact('sitterProfile'));
@@ -19,6 +24,11 @@ class BookingController extends Controller
 
     public function index()
     {
+        // Tikai owner drīkst skatīt savas rezervācijas
+        if (Auth::user()->role !== 'owner') {
+            abort(403);
+        }
+
         $bookings = Auth::user()->ownerBookings()
             ->with('sitter')
             ->latest()
@@ -29,6 +39,11 @@ class BookingController extends Controller
 
     public function sitterBookings()
     {
+        // Tikai sitter drīkst skatīt saņemtās rezervācijas
+        if (Auth::user()->role !== 'sitter') {
+            abort(403);
+        }
+
         $bookings = Auth::user()->sitterBookings()
             ->with('owner')
             ->latest()
@@ -39,6 +54,11 @@ class BookingController extends Controller
 
     public function store(Request $request)
     {
+        // Tikai owner drīkst izveidot rezervāciju
+        if (Auth::user()->role !== 'owner') {
+            abort(403);
+        }
+
         $validated = $request->validate([
             'sitter_id' => 'required|exists:users,id',
             'pet_type' => 'required|string|max:255',
@@ -47,6 +67,25 @@ class BookingController extends Controller
             'end_time' => 'required|after:start_time',
             'message' => 'nullable|string',
         ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Pārbauda, vai izvēlētais lietotājs tiešām ir pieskatītājs
+        |--------------------------------------------------------------------------
+        */
+
+        $sitterProfile = SitterProfile::where(
+            'user_id',
+            $validated['sitter_id']
+        )->first();
+
+        if (!$sitterProfile || $sitterProfile->user->role !== 'sitter') {
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'sitter_id' => 'Izvēlētais lietotājs nav pieskatītājs.'
+                ]);
+        }
 
         /*
         |--------------------------------------------------------------------------
@@ -72,15 +111,27 @@ class BookingController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $hasConflict = Booking::where('sitter_id', $validated['sitter_id'])
-            ->where('booking_date', $validated['booking_date'])
+        $hasConflict = Booking::where(
+            'sitter_id',
+            $validated['sitter_id']
+        )
+            ->where(
+                'booking_date',
+                $validated['booking_date']
+            )
             ->whereIn('status', ['pending', 'accepted'])
             ->where(function ($query) use ($validated) {
-
                 $query
-                    ->where('start_time', '<', $validated['end_time'])
-                    ->where('end_time', '>', $validated['start_time']);
-
+                    ->where(
+                        'start_time',
+                        '<',
+                        $validated['end_time']
+                    )
+                    ->where(
+                        'end_time',
+                        '>',
+                        $validated['start_time']
+                    );
             })
             ->exists();
 
@@ -117,7 +168,6 @@ class BookingController extends Controller
         */
 
         if (!empty($validated['message'])) {
-
             Message::create([
                 'booking_id' => $booking->id,
                 'sender_id' => Auth::id(),
@@ -135,10 +185,25 @@ class BookingController extends Controller
 
     public function accept($booking)
     {
+        // Tikai sitter drīkst pieņemt rezervāciju
+        if (Auth::user()->role !== 'sitter') {
+            abort(403);
+        }
+
         $booking = Booking::findOrFail($booking);
 
+        // Sitter drīkst mainīt tikai sev adresētu rezervāciju
         if ($booking->sitter_id !== Auth::id()) {
             abort(403);
+        }
+
+        // Pieņemt drīkst tikai gaidošu rezervāciju
+        if ($booking->status !== 'pending') {
+            return redirect('/bookings/sitter')
+                ->with(
+                    'success',
+                    'Šo rezervāciju vairs nevar pieņemt!'
+                );
         }
 
         $booking->update([
@@ -151,10 +216,25 @@ class BookingController extends Controller
 
     public function reject($booking)
     {
+        // Tikai sitter drīkst noraidīt rezervāciju
+        if (Auth::user()->role !== 'sitter') {
+            abort(403);
+        }
+
         $booking = Booking::findOrFail($booking);
 
+        // Sitter drīkst mainīt tikai sev adresētu rezervāciju
         if ($booking->sitter_id !== Auth::id()) {
             abort(403);
+        }
+
+        // Noraidīt drīkst tikai gaidošu rezervāciju
+        if ($booking->status !== 'pending') {
+            return redirect('/bookings/sitter')
+                ->with(
+                    'success',
+                    'Šo rezervāciju vairs nevar noraidīt!'
+                );
         }
 
         $booking->update([
@@ -167,12 +247,19 @@ class BookingController extends Controller
 
     public function complete($booking)
     {
+        // Tikai sitter drīkst pabeigt rezervāciju
+        if (Auth::user()->role !== 'sitter') {
+            abort(403);
+        }
+
         $booking = Booking::findOrFail($booking);
 
+        // Sitter drīkst mainīt tikai sev adresētu rezervāciju
         if ($booking->sitter_id !== Auth::id()) {
             abort(403);
         }
 
+        // Pabeigt drīkst tikai pieņemtu rezervāciju
         if ($booking->status !== 'accepted') {
             return redirect('/bookings/sitter')
                 ->with(
@@ -194,12 +281,19 @@ class BookingController extends Controller
 
     public function cancel($booking)
     {
+        // Tikai owner drīkst atcelt rezervāciju
+        if (Auth::user()->role !== 'owner') {
+            abort(403);
+        }
+
         $booking = Booking::findOrFail($booking);
 
+        // Owner drīkst atcelt tikai savu rezervāciju
         if ($booking->owner_id !== Auth::id()) {
             abort(403);
         }
 
+        // Atcelt drīkst tikai gaidošu rezervāciju
         if ($booking->status !== 'pending') {
             return redirect('/bookings')
                 ->with(
@@ -216,4 +310,3 @@ class BookingController extends Controller
             ->with('success', 'Rezervācija ir atcelta!');
     }
 }
-

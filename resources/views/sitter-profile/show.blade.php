@@ -1,85 +1,73 @@
 <!DOCTYPE html>
-
 <html lang="lv">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-```
-<title>Mans pieskatītāja profils - ĶepuDraugs.lv</title>
+    <title>Mans pieskatītāja profils - ĶepuDraugs.lv</title>
 
-<link rel="stylesheet" href="{{ asset('css/style.css') }}">
-```
-
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>
 
 <body>
 
-```
-<x-sitter-nav />
+    <x-sitter-nav />
 
-<main class="page-container">
+    <main class="page-container">
 
-    <div class="form-container">
+        <!-- PROFILA GALVENE -->
 
-        <div class="card">
+        <section class="sitter-profile-hero">
 
-            <div style="text-align: center;">
+            <div class="sitter-profile-avatar">
+                {{ mb_strtoupper(mb_substr($profile->user->name, 0, 1)) }}
+            </div>
 
-                <div class="feature-icon">
-                    🐕
-                </div>
+            <div class="sitter-profile-heading">
 
-                <p class="subtitle">
-                    🐾 ĶepuDraugs.lv
+                <p class="section-label">
+                    Mans pieskatītāja profils
                 </p>
 
-                <h1 class="page-title">
-                    Mans pieskatītāja profils
+                <h1>
+                    {{ $profile->user->name }}
                 </h1>
 
-                <p class="page-description">
+                <div class="sitter-profile-meta">
+
+                    <span>
+                        📍 {{ $profile->city }}
+                    </span>
+
+                    <span>
+                        💶 {{ $profile->price }} € / dienā
+                    </span>
+
+                    @if ($reviews->count() > 0)
+
+                        <span>
+                            ⭐ {{ number_format($averageRating, 1) }}
+                            ({{ $reviews->count() }})
+                        </span>
+
+                    @else
+
+                        <span>
+                            ☆ Nav atsauksmju
+                        </span>
+
+                    @endif
+
+                </div>
+
+                <p class="sitter-profile-helper">
                     Šo informāciju redz mājdzīvnieku īpašnieki,
                     kuri meklē pieskatītāju.
                 </p>
 
             </div>
 
-            <div style="margin-top: 30px;">
-
-                <p>
-                    <strong>👤 Vārds</strong><br>
-                    {{ $profile->user->name }}
-                </p>
-
-                <p>
-                    <strong>📍 Pilsēta</strong><br>
-                    {{ $profile->city }}
-                </p>
-
-                <p>
-                    <strong>💬 Par sevi</strong><br>
-                    {{ $profile->description ?? 'Nav norādīts' }}
-                </p>
-
-                <p>
-                    <strong>⭐ Pieredze</strong><br>
-                    {{ $profile->experience ?? 'Nav norādīta' }}
-                </p>
-
-                <p>
-                    <strong>💶 Cena</strong><br>
-                    {{ $profile->price }} € / dienā
-                </p>
-
-                <p>
-                    <strong>🐾 Pieskatāmie dzīvnieki</strong><br>
-                    {{ $profile->accepted_animals }}
-                </p>
-
-            </div>
-
-            <div style="margin-top: 30px;">
+            <div class="sitter-profile-actions">
 
                 <a href="/sitter-profile/create" class="main-button">
                     ✏️ Rediģēt profilu
@@ -87,137 +75,333 @@
 
             </div>
 
-        </div>
+        </section>
 
 
-        {{-- VĒRTĒJUMS --}}
+        <!-- INFORMĀCIJA -->
 
-        <div class="card" style="margin-top: 25px; text-align: center;">
+        <section class="profile-section">
 
-            <p class="subtitle">
-                ⭐ Vērtējums
-            </p>
+            <div class="profile-section-heading">
 
-            @if ($reviews->count() > 0)
+                <div>
+                    <p class="section-label">
+                        Profila informācija
+                    </p>
 
-                <h2 style="font-size: 36px; margin: 10px 0;">
-                    {{ number_format($averageRating, 1) }} / 5
-                </h2>
+                    <h2>
+                        Par mani
+                    </h2>
+                </div>
 
-                <p style="font-size: 24px; margin: 5px 0;">
-                    @for ($i = 1; $i <= 5; $i++)
-
-                        @if ($i <= round($averageRating))
-                            ⭐
-                        @else
-                            ☆
-                        @endif
-
-                    @endfor
-                </p>
-
-                <p class="page-description">
-                    Balstīts uz {{ $reviews->count() }}
-                    {{ $reviews->count() == 1 ? 'atsauksmi' : 'atsauksmēm' }}
-                </p>
-
-            @else
-
-                <p class="page-description">
-                    Šim pieskatītājam vēl nav nevienas atsauksmes.
-                </p>
-
-            @endif
-
-        </div>
+            </div>
 
 
-        {{-- ATSAUKSMES --}}
+            <div class="sitter-info-grid">
 
-        <div class="card" style="margin-top: 25px;">
+                <div class="sitter-info-card">
 
-            <p class="subtitle">
-                💬 Atsauksmes
-            </p>
+                    <div class="sitter-info-icon">
+                        📍
+                    </div>
 
-            <h2>
-                Ko saka mājdzīvnieku īpašnieki?
-            </h2>
+                    <div>
+                        <span class="sitter-info-label">
+                            Pilsēta
+                        </span>
 
-            @if ($reviews->count() > 0)
+                        <strong>
+                            {{ $profile->city }}
+                        </strong>
+                    </div>
 
-                @foreach ($reviews as $review)
+                </div>
 
-                    <div
-                        style="
-                            padding: 20px 0;
-                            border-bottom: 1px solid var(--border);
-                        "
-                    >
 
-                        <div style="display: flex; justify-content: space-between; align-items: center; gap: 15px; flex-wrap: wrap;">
+                <div class="sitter-info-card">
 
-                            <strong>
-                                👤 {{ $review->owner->name }}
-                            </strong>
+                    <div class="sitter-info-icon">
+                        💶
+                    </div>
 
-                            <span style="font-size: 20px;">
+                    <div>
+                        <span class="sitter-info-label">
+                            Cena
+                        </span>
 
-                                @for ($i = 1; $i <= 5; $i++)
+                        <strong>
+                            {{ $profile->price }} € / dienā
+                        </strong>
+                    </div>
 
-                                    @if ($i <= $review->rating)
-                                        ⭐
-                                    @else
-                                        ☆
-                                    @endif
+                </div>
 
-                                @endfor
 
-                            </span>
+                <div class="sitter-info-card">
 
-                        </div>
+                    <div class="sitter-info-icon">
+                        🐾
+                    </div>
 
-                        @if ($review->review)
+                    <div>
+                        <span class="sitter-info-label">
+                            Pieskatāmie dzīvnieki
+                        </span>
 
-                            <p style="margin-top: 12px;">
-                                {{ $review->review }}
-                            </p>
+                        <strong>
+                            {{ $profile->accepted_animals }}
+                        </strong>
+                    </div>
 
-                        @else
+                </div>
 
-                            <p
-                                style="
-                                    margin-top: 12px;
-                                    color: var(--text-light);
-                                "
-                            >
-                                Atsauksmes teksts nav pievienots.
-                            </p>
+            </div>
 
-                        @endif
 
-                        <small style="color: var(--text-light);">
-                            {{ $review->created_at->format('d.m.Y.') }}
-                        </small>
+            <div class="sitter-detail-grid">
+
+                <article class="sitter-detail-card">
+
+                    <div class="sitter-detail-title">
+                        <span>👤</span>
+                        <h3>Par sevi</h3>
+                    </div>
+
+                    <p>
+                        {{ $profile->description ?? 'Informācija nav norādīta.' }}
+                    </p>
+
+                </article>
+
+
+                <article class="sitter-detail-card">
+
+                    <div class="sitter-detail-title">
+                        <span>⭐</span>
+                        <h3>Pieredze</h3>
+                    </div>
+
+                    <p>
+                        {{ $profile->experience ?? 'Pieredze nav norādīta.' }}
+                    </p>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- VĒRTĒJUMS -->
+
+        <section class="profile-section">
+
+            <div class="profile-section-heading">
+
+                <div>
+                    <p class="section-label">
+                        Vērtējums
+                    </p>
+
+                    <h2>
+                        Klientu novērtējums
+                    </h2>
+                </div>
+
+            </div>
+
+
+            <div class="rating-summary">
+
+                @if ($reviews->count() > 0)
+
+                    <div class="rating-score">
+
+                        <strong>
+                            {{ number_format($averageRating, 1) }}
+                        </strong>
+
+                        <span>
+                            no 5
+                        </span>
 
                     </div>
 
-                @endforeach
+
+                    <div class="rating-details">
+
+                        <div class="rating-stars">
+
+                            @for ($i = 1; $i <= 5; $i++)
+
+                                @if ($i <= round($averageRating))
+                                    <span>★</span>
+                                @else
+                                    <span class="empty-star">★</span>
+                                @endif
+
+                            @endfor
+
+                        </div>
+
+                        <p>
+                            Balstīts uz
+                            <strong>{{ $reviews->count() }}</strong>
+                            {{ $reviews->count() == 1 ? 'atsauksmi' : 'atsauksmēm' }}
+                        </p>
+
+                    </div>
+
+                @else
+
+                    <div class="empty-state">
+
+                        <div class="empty-state-icon">
+                            ☆
+                        </div>
+
+                        <h3>
+                            Vēl nav vērtējumu
+                        </h3>
+
+                        <p>
+                            Kad mājdzīvnieku īpašnieki būs pabeiguši
+                            rezervāciju un atstājuši atsauksmi,
+                            vērtējums būs redzams šeit.
+                        </p>
+
+                    </div>
+
+                @endif
+
+            </div>
+
+        </section>
+
+
+        <!-- ATSAUKSMES -->
+
+        <section class="profile-section">
+
+            <div class="profile-section-heading">
+
+                <div>
+                    <p class="section-label">
+                        Atsauksmes
+                    </p>
+
+                    <h2>
+                        Ko saka mājdzīvnieku īpašnieki?
+                    </h2>
+                </div>
+
+                @if ($reviews->count() > 0)
+
+                    <span class="review-count">
+                        {{ $reviews->count() }}
+                        {{ $reviews->count() == 1 ? 'atsauksme' : 'atsauksmes' }}
+                    </span>
+
+                @endif
+
+            </div>
+
+
+            @if ($reviews->count() > 0)
+
+                <div class="reviews-list">
+
+                    @foreach ($reviews as $review)
+
+                        <article class="review-card">
+
+                            <div class="review-header">
+
+                                <div class="review-user">
+
+                                    <div class="review-avatar">
+                                        {{ mb_strtoupper(mb_substr($review->owner->name, 0, 1)) }}
+                                    </div>
+
+                                    <div>
+
+                                        <strong>
+                                            {{ $review->owner->name }}
+                                        </strong>
+
+                                        <span class="review-date">
+                                            {{ $review->created_at->format('d.m.Y.') }}
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div
+                                    class="review-stars"
+                                    aria-label="{{ $review->rating }} no 5 zvaigznēm"
+                                >
+
+                                    @for ($i = 1; $i <= 5; $i++)
+
+                                        @if ($i <= $review->rating)
+                                            <span>★</span>
+                                        @else
+                                            <span class="empty-star">★</span>
+                                        @endif
+
+                                    @endfor
+
+                                </div>
+
+                            </div>
+
+
+                            @if ($review->review)
+
+                                <p class="review-text">
+                                    {{ $review->review }}
+                                </p>
+
+                            @else
+
+                                <p class="review-text review-text-empty">
+                                    Atsauksmes teksts nav pievienots.
+                                </p>
+
+                            @endif
+
+                        </article>
+
+                    @endforeach
+
+                </div>
 
             @else
 
-                <p class="page-description">
-                    Pagaidām nav nevienas atsauksmes.
-                </p>
+                <div class="empty-state reviews-empty">
+
+                    <div class="empty-state-icon">
+                        💬
+                    </div>
+
+                    <h3>
+                        Pagaidām nav atsauksmju
+                    </h3>
+
+                    <p>
+                        Šeit tiks parādītas mājdzīvnieku īpašnieku
+                        atstātās atsauksmes.
+                    </p>
+
+                </div>
 
             @endif
 
-        </div>
+        </section>
 
-    </div>
-
-</main>
-```
+    </main>
 
 </body>
 </html>

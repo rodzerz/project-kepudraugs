@@ -4,106 +4,326 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Atstāt atsauksmi</title>
+    <title>Atstāt atsauksmi - ĶepuDraugs.lv</title>
 
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>
 
 <body>
 
-<nav>
-    <div>
-        <a href="/dashboard">🐾 ĶepuDraugs.lv</a>
-    </div>
+    <x-owner-nav />
 
-    <div>
-        <a href="/dashboard">Sākums</a>
-        <a href="/profile">Mans profils</a>
-        <a href="/sitters">Pieskatītāji</a>
-        <a href="/pets">Mani mājdzīvnieki</a>
-        <a href="/bookings">Manas rezervācijas</a>
+    <main class="page-container">
 
-        <form action="/logout" method="POST" style="display: inline;">
-            @csrf
-            <button type="submit">Iziet</button>
-        </form>
-    </div>
-</nav>
+        <!-- LAPAS GALVENE -->
 
-<div class="container">
+        <section class="review-page-header">
 
-    <h1>⭐ Atstāt atsauksmi</h1>
+            <div class="review-page-icon">
+                ⭐
+            </div>
 
-    <div class="card">
+            <div>
 
-        <h2>Pieskatītājs</h2>
+                <p class="section-label">
+                    Rezervācijas novērtējums
+                </p>
 
-        <p>
-            <strong>{{ $booking->sitter->name }}</strong>
-        </p>
+                <h1 class="page-title">
+                    Atstāt atsauksmi
+                </h1>
 
-        <p>
-            Rezervācijas datums:
-            {{ $booking->booking_date }}
-        </p>
-
-        <form action="/bookings/{{ $booking->id }}/review" method="POST">
-            @csrf
-
-            <div class="form-group">
-
-                <label for="rating">
-                    Vērtējums
-                </label>
-
-                <select name="rating" id="rating" required>
-                    <option value="">Izvēlies vērtējumu</option>
-                    <option value="5">⭐⭐⭐⭐⭐ – Lieliski</option>
-                    <option value="4">⭐⭐⭐⭐ – Ļoti labi</option>
-                    <option value="3">⭐⭐⭐ – Labi</option>
-                    <option value="2">⭐⭐ – Vidēji</option>
-                    <option value="1">⭐ – Slikti</option>
-                </select>
-
-                @error('rating')
-                    <p class="error">{{ $message }}</p>
-                @enderror
+                <p class="page-description">
+                    Novērtē savu pieredzi ar pieskatītāju.
+                    Tava atsauksme palīdzēs arī citiem mājdzīvnieku īpašniekiem.
+                </p>
 
             </div>
 
-            <div class="form-group">
+        </section>
 
-                <label for="review">
-                    Atsauksme
-                </label>
 
-                <textarea
-                    name="review"
-                    id="review"
-                    rows="6"
-                    maxlength="2000"
-                    placeholder="Uzraksti savu atsauksmi par pieskatītāju..."
-                >{{ old('review') }}</textarea>
+        <!-- GALVENAIS SATURS -->
 
-                @error('review')
-                    <p class="error">{{ $message }}</p>
-                @enderror
+        <section class="review-layout">
+
+            <!-- FORMA -->
+
+            <div class="review-form-card">
+
+                <div class="review-form-heading">
+
+                    <p class="section-label">
+                        Tavs vērtējums
+                    </p>
+
+                    <h2>
+                        Kāda bija tava pieredze?
+                    </h2>
+
+                    <p>
+                        Izvēlies vērtējumu un, ja vēlies,
+                        pievieno arī īsu atsauksmi.
+                    </p>
+
+                </div>
+
+
+                @if ($errors->any())
+
+                    <div class="alert alert-danger">
+
+                        <strong>
+                            Lūdzu, pārbaudi ievadīto informāciju.
+                        </strong>
+
+                        @foreach ($errors->all() as $error)
+                            <p>• {{ $error }}</p>
+                        @endforeach
+
+                    </div>
+
+                @endif
+
+
+                <form
+                    action="/bookings/{{ $booking->id }}/review"
+                    method="POST"
+                >
+
+                    @csrf
+
+
+                    <!-- VĒRTĒJUMS -->
+
+                    <div class="form-group">
+
+                        <label for="rating">
+                            Vērtējums *
+                        </label>
+
+                        <select
+                            name="rating"
+                            id="rating"
+                            required
+                        >
+
+                            <option value="">
+                                Izvēlies vērtējumu
+                            </option>
+
+                            <option
+                                value="5"
+                                {{ old('rating') == '5' ? 'selected' : '' }}
+                            >
+                                ⭐⭐⭐⭐⭐ – Lieliski
+                            </option>
+
+                            <option
+                                value="4"
+                                {{ old('rating') == '4' ? 'selected' : '' }}
+                            >
+                                ⭐⭐⭐⭐ – Ļoti labi
+                            </option>
+
+                            <option
+                                value="3"
+                                {{ old('rating') == '3' ? 'selected' : '' }}
+                            >
+                                ⭐⭐⭐ – Labi
+                            </option>
+
+                            <option
+                                value="2"
+                                {{ old('rating') == '2' ? 'selected' : '' }}
+                            >
+                                ⭐⭐ – Vidēji
+                            </option>
+
+                            <option
+                                value="1"
+                                {{ old('rating') == '1' ? 'selected' : '' }}
+                            >
+                                ⭐ – Slikti
+                            </option>
+
+                        </select>
+
+                        @error('rating')
+                            <p class="field-error">
+                                {{ $message }}
+                            </p>
+                        @enderror
+
+                    </div>
+
+
+                    <!-- ATSAUKSME -->
+
+                    <div class="form-group">
+
+                        <label for="review">
+                            Atsauksme
+                        </label>
+
+                        <textarea
+                            name="review"
+                            id="review"
+                            rows="6"
+                            maxlength="2000"
+                            placeholder="Uzraksti savu atsauksmi par pieskatītāju..."
+                        >{{ old('review') }}</textarea>
+
+                        <div class="form-help-row">
+
+                            <span class="form-help">
+                                Atsauksmes teksts nav obligāts.
+                            </span>
+
+                            <span class="form-help">
+                                Maks. 2000 rakstzīmes
+                            </span>
+
+                        </div>
+
+                        @error('review')
+                            <p class="field-error">
+                                {{ $message }}
+                            </p>
+                        @enderror
+
+                    </div>
+
+
+                    <!-- POGAS -->
+
+                    <div class="review-form-actions">
+
+                        <button
+                            type="submit"
+                            class="main-button"
+                        >
+                            ⭐ Iesniegt atsauksmi
+                        </button>
+
+                        <a
+                            href="/bookings"
+                            class="secondary-button"
+                        >
+                            Atcelt
+                        </a>
+
+                    </div>
+
+                </form>
 
             </div>
 
-            <button type="submit" class="btn">
-                ⭐ Iesniegt atsauksmi
-            </button>
 
-            <a href="/bookings" class="btn btn-secondary">
-                Atcelt
-            </a>
+            <!-- REZERVĀCIJAS INFORMĀCIJA -->
 
-        </form>
+            <aside class="review-booking-card">
 
-    </div>
+                <div class="review-sitter-avatar">
+                    {{ mb_strtoupper(mb_substr($booking->sitter->name, 0, 1)) }}
+                </div>
 
-</div>
+                <p class="section-label">
+                    Pieskatītājs
+                </p>
+
+                <h2>
+                    {{ $booking->sitter->name }}
+                </h2>
+
+                <div class="review-booking-divider"></div>
+
+
+                <div class="review-booking-info">
+
+                    <div class="review-booking-row">
+
+                        <span class="review-booking-icon">
+                            📅
+                        </span>
+
+                        <div>
+
+                            <span class="review-booking-label">
+                                Rezervācijas datums
+                            </span>
+
+                            <strong>
+                                {{ \Carbon\Carbon::parse($booking->booking_date)->format('d.m.Y.') }}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="review-booking-row">
+
+                        <span class="review-booking-icon">
+                            🐾
+                        </span>
+
+                        <div>
+
+                            <span class="review-booking-label">
+                                Dzīvnieks
+                            </span>
+
+                            <strong>
+                                {{ $booking->pet_type }}
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="review-booking-row">
+
+                        <span class="review-booking-icon">
+                            ✓
+                        </span>
+
+                        <div>
+
+                            <span class="review-booking-label">
+                                Rezervācijas statuss
+                            </span>
+
+                            <strong class="review-completed">
+                                Pabeigta
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="review-note">
+
+                    <span>
+                        💡
+                    </span>
+
+                    <p>
+                        Raksti godīgu un noderīgu atsauksmi par savu
+                        pieredzi ar pieskatītāju.
+                    </p>
+
+                </div>
+
+            </aside>
+
+        </section>
+
+    </main>
 
 </body>
 </html>

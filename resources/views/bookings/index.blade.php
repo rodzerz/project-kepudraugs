@@ -1,6 +1,4 @@
-```blade
 <!DOCTYPE html>
-
 <html lang="lv">
 <head>
     <meta charset="UTF-8">
@@ -9,41 +7,6 @@
     <title>Manas rezervācijas - ĶepuDraugs.lv</title>
 
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-
-    <style>
-        .message-button {
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .unread-badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-
-            min-width: 22px;
-            height: 22px;
-
-            padding: 0 6px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            background: var(--danger);
-            color: white;
-
-            border-radius: 50%;
-
-            font-size: 12px;
-            font-weight: 700;
-            line-height: 1;
-
-            border: 2px solid var(--white);
-        }
-    </style>
 </head>
 
 <body>
@@ -52,18 +15,38 @@
 
     <main class="page-container">
 
-        <div>
-            <p class="subtitle">📅 Tavas rezervācijas</p>
+        <!-- LAPAS GALVENE -->
 
-            <h1 class="page-title">
-                Manas rezervācijas
-            </h1>
+        <section class="bookings-page-header">
 
-            <p class="page-description">
-                Šeit vari apskatīt savus rezervāciju pieprasījumus
-                un to pašreizējo statusu.
-            </p>
-        </div>
+            <div>
+
+                <p class="section-label">
+                    Tavas rezervācijas
+                </p>
+
+                <h1 class="page-title">
+                    Manas rezervācijas
+                </h1>
+
+                <p class="page-description">
+                    Apskati savus rezervāciju pieprasījumus,
+                    to statusus un sazinies ar pieskatītājiem.
+                </p>
+
+            </div>
+
+            <a
+                href="/sitters"
+                class="main-button"
+            >
+                🔎 Atrast pieskatītāju
+            </a>
+
+        </section>
+
+
+        <!-- PAZIŅOJUMS -->
 
         @if (session('success'))
 
@@ -73,178 +56,295 @@
 
         @endif
 
+
         @if ($bookings->count() > 0)
 
-            @foreach ($bookings as $booking)
+            <section class="bookings-list">
 
-                @php
-                    $unreadMessages = $booking->messages()
-                        ->where('receiver_id', auth()->id())
-                        ->whereNull('read_at')
-                        ->count();
+                @foreach ($bookings as $booking)
 
-                    $hasReview = $booking->review()->exists();
-                @endphp
+                    @php
+                        $unreadMessages = $booking->messages()
+                            ->where('receiver_id', auth()->id())
+                            ->whereNull('read_at')
+                            ->count();
 
-                <div class="card">
+                        $hasReview = $booking->review()->exists();
+                    @endphp
 
-                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap;">
 
-                        <div>
+                    <article class="booking-card">
 
-                            <p class="subtitle">
-                                🐾 Pieskatītājs
-                            </p>
+                        <!-- KARTĪTES GALVENE -->
 
-                            <h3>
-                                {{ $booking->sitter->name }}
-                            </h3>
+                        <div class="booking-card-header">
+
+                            <div class="booking-person">
+
+                                <div class="booking-person-avatar">
+                                    {{ mb_strtoupper(mb_substr($booking->sitter->name, 0, 1)) }}
+                                </div>
+
+                                <div>
+
+                                    <span class="booking-person-label">
+                                        Pieskatītājs
+                                    </span>
+
+                                    <h2>
+                                        {{ $booking->sitter->name }}
+                                    </h2>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="booking-status-wrapper">
+
+                                @if ($booking->status === 'pending')
+
+                                    <span class="status status-pending">
+                                        Gaida apstiprinājumu
+                                    </span>
+
+                                @elseif ($booking->status === 'accepted')
+
+                                    <span class="status status-accepted">
+                                        Pieņemta
+                                    </span>
+
+                                @elseif ($booking->status === 'completed')
+
+                                    <span class="status status-completed">
+                                        Pabeigta
+                                    </span>
+
+                                @elseif ($booking->status === 'rejected')
+
+                                    <span class="status status-rejected">
+                                        Noraidīta
+                                    </span>
+
+                                @elseif ($booking->status === 'cancelled')
+
+                                    <span class="status status-cancelled">
+                                        Atcelta
+                                    </span>
+
+                                @endif
+
+                            </div>
 
                         </div>
 
-                        @if ($booking->status === 'pending')
 
-                            <span class="status status-pending">
-                                Gaida apstiprinājumu
-                            </span>
+                        <!-- REZERVĀCIJAS INFORMĀCIJA -->
 
-                        @elseif ($booking->status === 'accepted')
+                        <div class="booking-details-grid">
 
-                            <span class="status status-accepted">
-                                Pieņemta
-                            </span>
+                            <div class="booking-detail-item">
 
-                        @elseif ($booking->status === 'completed')
+                                <div class="booking-detail-icon">
+                                    🐕
+                                </div>
 
-                            <span class="status status-accepted">
-                                Pabeigta
-                            </span>
+                                <div>
 
-                        @elseif ($booking->status === 'rejected')
+                                    <span>
+                                        Mājdzīvnieka veids
+                                    </span>
 
-                            <span class="status status-rejected">
-                                Noraidīta
-                            </span>
+                                    <strong>
+                                        {{ $booking->pet_type }}
+                                    </strong>
 
-                        @elseif ($booking->status === 'cancelled')
+                                </div>
 
-                            <span class="status status-cancelled">
-                                Atcelta
-                            </span>
+                            </div>
 
-                        @endif
 
-                    </div>
+                            <div class="booking-detail-item">
 
-                    <hr style="border: none; border-top: 1px solid var(--border); margin: 20px 0;">
+                                <div class="booking-detail-icon">
+                                    📅
+                                </div>
 
-                    <p>
-                        <strong>🐕 Mājdzīvnieka veids:</strong><br>
-                        {{ $booking->pet_type }}
-                    </p>
+                                <div>
 
-                    <p>
-                        <strong>📅 Datums:</strong><br>
-                        {{ $booking->booking_date }}
-                    </p>
+                                    <span>
+                                        Datums
+                                    </span>
 
-                    <p>
-                        <strong>🕐 Laiks:</strong><br>
-                        {{ $booking->start_time }} - {{ $booking->end_time }}
-                    </p>
+                                    <strong>
+                                        {{ \Carbon\Carbon::parse($booking->booking_date)->format('d.m.Y.') }}
+                                    </strong>
 
-                    <p>
-                        <strong>💬 Ziņa:</strong><br>
-                        {{ $booking->message ?? 'Nav ziņas' }}
-                    </p>
+                                </div>
 
-                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 25px;">
+                            </div>
 
-                        <a
-                            href="/bookings/{{ $booking->id }}/messages"
-                            class="main-button message-button"
-                        >
-                            💬 Sarakste
 
-                            @if ($unreadMessages > 0)
+                            <div class="booking-detail-item">
 
-                                <span class="unread-badge">
-                                    {{ $unreadMessages }}
+                                <div class="booking-detail-icon">
+                                    🕐
+                                </div>
+
+                                <div>
+
+                                    <span>
+                                        Laiks
+                                    </span>
+
+                                    <strong>
+                                        {{ substr($booking->start_time, 0, 5) }}
+                                        –
+                                        {{ substr($booking->end_time, 0, 5) }}
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- REZERVĀCIJAS ZIŅA -->
+
+                        <div class="booking-message-box">
+
+                            <div class="booking-message-heading">
+
+                                <span>
+                                    💬
+                                </span>
+
+                                <strong>
+                                    Rezervācijas ziņa
+                                </strong>
+
+                            </div>
+
+
+                            @if ($booking->message)
+
+                                <p>
+                                    {{ $booking->message }}
+                                </p>
+
+                            @else
+
+                                <p class="booking-no-message">
+                                    Rezervācijai nav pievienota papildu ziņa.
+                                </p>
+
+                            @endif
+
+                        </div>
+
+
+                        <!-- DARBĪBAS -->
+
+                        <div class="booking-card-actions">
+
+                            <a
+                                href="/bookings/{{ $booking->id }}/messages"
+                                class="secondary-button message-button"
+                            >
+                                💬 Sarakste
+
+                                @if ($unreadMessages > 0)
+
+                                    <span class="unread-badge">
+                                        {{ $unreadMessages }}
+                                    </span>
+
+                                @endif
+
+                            </a>
+
+
+                            @if ($booking->status === 'pending')
+
+                                <form
+                                    action="/bookings/{{ $booking->id }}/cancel"
+                                    method="POST"
+                                    class="booking-action-form"
+                                    onsubmit="return confirm('Vai tiešām vēlies atcelt šo rezervāciju?');"
+                                >
+
+                                    @csrf
+
+                                    <button
+                                        type="submit"
+                                        class="danger-button"
+                                    >
+                                        ✕ Atcelt rezervāciju
+                                    </button>
+
+                                </form>
+
+                            @endif
+
+
+                            @if ($booking->status === 'completed' && !$hasReview)
+
+                                <a
+                                    href="/bookings/{{ $booking->id }}/review"
+                                    class="main-button"
+                                >
+                                    ⭐ Atstāt atsauksmi
+                                </a>
+
+                            @elseif ($booking->status === 'completed' && $hasReview)
+
+                                <span class="review-added-badge">
+                                    <span>
+                                        ⭐
+                                    </span>
+
+                                    Atsauksme pievienota
                                 </span>
 
                             @endif
 
-                        </a>
+                        </div>
 
-                        @if ($booking->status === 'pending')
+                    </article>
 
-                            <form
-                                action="/bookings/{{ $booking->id }}/cancel"
-                                method="POST"
-                                style="margin: 0;"
-                            >
+                @endforeach
 
-                                @csrf
+            </section>
 
-                                <button
-                                    type="submit"
-                                    style="background: var(--danger);"
-                                >
-                                    Atcelt rezervāciju
-                                </button>
-
-                            </form>
-
-                        @endif
-
-                        @if ($booking->status === 'completed' && !$hasReview)
-
-                            <a
-                                href="/bookings/{{ $booking->id }}/review"
-                                class="main-button"
-                            >
-                                ⭐ Atstāt atsauksmi
-                            </a>
-
-                        @elseif ($booking->status === 'completed' && $hasReview)
-
-                            <span
-                                class="status status-accepted"
-                                style="display: inline-flex; align-items: center;"
-                            >
-                                ⭐ Atsauksme pievienota
-                            </span>
-
-                        @endif
-
-                    </div>
-
-                </div>
-
-            @endforeach
 
         @else
 
-            <div class="card" style="text-align: center;">
+            <!-- TUKŠS STĀVOKLIS -->
 
-                <div class="feature-icon">
+            <section class="bookings-empty-state">
+
+                <div class="empty-state-icon">
                     📅
                 </div>
 
-                <h3>
+                <h2>
                     Tev vēl nav rezervāciju
-                </h3>
+                </h2>
 
-                <p class="page-description">
-                    Atrodi piemērotu pieskatītāju un izveido
-                    savu pirmo rezervāciju.
+                <p>
+                    Atrodi piemērotu mājdzīvnieku pieskatītāju
+                    un izveido savu pirmo rezervāciju.
                 </p>
 
-                <a href="/sitters" class="main-button">
+                <a
+                    href="/sitters"
+                    class="main-button"
+                >
                     🔎 Atrast pieskatītāju
                 </a>
 
-            </div>
+            </section>
 
         @endif
 
@@ -252,4 +352,3 @@
 
 </body>
 </html>
-```

@@ -4,238 +4,375 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Mājdzīvnieku pārvaldība | ĶepuDraugs.lv</title>
+    <title>Mājdzīvnieku pārvaldība - ĶepuDraugs.lv</title>
 
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-
-    <style>
-        .admin-pets-container {
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
-
-        .admin-pets-header {
-            margin-bottom: 25px;
-        }
-
-        .admin-pets-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .admin-pet-card {
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 20px;
-            box-shadow: var(--shadow);
-        }
-
-        .admin-pet-card h2 {
-            margin-top: 0;
-            color: var(--primary);
-        }
-
-        .admin-pet-info {
-            margin-bottom: 15px;
-        }
-
-        .admin-pet-info p {
-            margin: 7px 0;
-        }
-
-        .admin-pet-images {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 15px 0;
-        }
-
-        .admin-pet-images img {
-            width: 110px;
-            height: 110px;
-            object-fit: cover;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-        }
-
-        .delete-pet-button {
-            background: var(--danger);
-            color: white;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .delete-pet-button:hover {
-            opacity: 0.9;
-        }
-
-        .no-pets {
-            background: var(--white);
-            padding: 25px;
-            border-radius: 14px;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow);
-        }
-
-        .success-message {
-            background: var(--primary-light);
-            padding: 12px 16px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-    </style>
 </head>
 
 <body>
 
-<nav>
-    <div>
-        <a href="/admin">🐾 ĶepuDraugs.lv — Administrators</a>
-    </div>
+    <!-- ADMINISTRATORA NAVIGĀCIJA -->
 
-    <div>
-        <a href="/admin">👥 Lietotāji</a>
-        <a href="/admin/bookings">📅 Rezervācijas</a>
-        <a href="/admin/pets">🐕 Mājdzīvnieki</a>
+    <header class="header admin-header">
 
-        <form action="/logout" method="POST" style="display: inline;">
-            @csrf
-            <button type="submit">Iziet</button>
-        </form>
-    </div>
-</nav>
+        <div class="header-content">
 
-<hr>
+            <a href="/admin" class="logo">
 
-<div class="admin-pets-container">
+                <span class="logo-icon">
+                    🐾
+                </span>
 
-    <div class="admin-pets-header">
-        <h1>🐕 Mājdzīvnieku pārvaldība</h1>
+                <span>
+                    ĶepuDraugs.lv
+                </span>
 
-        <p>
-            Šeit administrators var apskatīt lietotāju pievienotos
-            mājdzīvniekus un noņemt neatbilstošu saturu.
-        </p>
-    </div>
+                <span class="admin-logo-badge">
+                    Admin
+                </span>
 
-    @if(session('success'))
-        <div class="success-message">
-            {{ session('success') }}
-        </div>
-    @endif
+            </a>
 
-    @if($pets->count() > 0)
 
-        <div class="admin-pets-grid">
+            <nav class="main-nav">
 
-            @foreach($pets as $pet)
+                <a href="/admin">
+                    Lietotāji
+                </a>
 
-                <div class="admin-pet-card">
+                <a href="/admin/bookings">
+                    Rezervācijas
+                </a>
 
-                    <h2>🐾 {{ $pet->name }}</h2>
+                <a
+                    href="/admin/pets"
+                    class="active"
+                >
+                    Mājdzīvnieki
+                </a>
 
-                    <div class="admin-pet-info">
 
-                        <p>
-                            <strong>Īpašnieks:</strong>
-                            {{ $pet->user->name }}
-                        </p>
+                <form
+                    action="/logout"
+                    method="POST"
+                    class="logout-form"
+                >
 
-                        <p>
-                            <strong>Dzīvnieka veids:</strong>
-                            {{ $pet->species }}
-                        </p>
+                    @csrf
 
-                        @if($pet->breed)
-                            <p>
-                                <strong>Šķirne:</strong>
-                                {{ $pet->breed }}
-                            </p>
-                        @endif
-
-                        @if($pet->age)
-                            <p>
-                                <strong>Vecums:</strong>
-                                {{ $pet->age }}
-                            </p>
-                        @endif
-
-                        @if($pet->weight)
-                            <p>
-                                <strong>Svars:</strong>
-                                {{ $pet->weight }} kg
-                            </p>
-                        @endif
-
-                        @if($pet->special_requirements)
-                            <p>
-                                <strong>Īpašās prasības:</strong>
-                                {{ $pet->special_requirements }}
-                            </p>
-                        @endif
-
-                    </div>
-
-                    @if($pet->images->count() > 0)
-
-                        <div class="admin-pet-images">
-
-                            @foreach($pet->images as $image)
-
-                                <img
-                                    src="{{ asset('storage/' . $image->image) }}"
-                                    alt="{{ $pet->name }}"
-                                >
-
-                            @endforeach
-
-                        </div>
-
-                    @else
-
-                        <p>Nav pievienotu attēlu.</p>
-
-                    @endif
-
-                    <form
-                        action="/admin/pets/{{ $pet->id }}"
-                        method="POST"
-                        onsubmit="return confirm('Vai tiešām vēlaties noņemt šo mājdzīvnieku un tā saturu?');"
+                    <button
+                        type="submit"
+                        class="logout-button"
                     >
+                        Iziet
+                    </button>
 
-                        @csrf
-                        @method('DELETE')
+                </form>
 
-                        <button
-                            type="submit"
-                            class="delete-pet-button"
-                        >
-                            🗑️ Noņemt mājdzīvnieku
-                        </button>
+            </nav>
 
-                    </form>
+        </div>
+
+    </header>
+
+
+    <main class="page-container">
+
+        <!-- LAPAS GALVENE -->
+
+        <section class="admin-page-header">
+
+            <div>
+
+                <p class="section-label">
+                    Administratora panelis
+                </p>
+
+                <h1 class="page-title">
+                    Mājdzīvnieku pārvaldība
+                </h1>
+
+                <p class="page-description">
+                    Apskati lietotāju pievienotos mājdzīvniekus
+                    un nepieciešamības gadījumā noņem neatbilstošu saturu.
+                </p>
+
+            </div>
+
+
+            <div class="admin-page-header-icon">
+                🐕
+            </div>
+
+        </section>
+
+
+        <!-- PAZIŅOJUMS -->
+
+        @if (session('success'))
+
+            <div class="alert alert-success">
+
+                <strong>
+                    {{ session('success') }}
+                </strong>
+
+            </div>
+
+        @endif
+
+
+        @if ($pets->count() > 0)
+
+            <!-- REZULTĀTU GALVENE -->
+
+            <section class="admin-results-heading">
+
+                <div>
+
+                    <p class="section-label">
+                        Sistēmas saturs
+                    </p>
+
+                    <h2>
+                        Pievienotie mājdzīvnieki
+                    </h2>
 
                 </div>
 
-            @endforeach
+                <span class="admin-results-count">
+                    {{ $pets->count() }}
+                    {{ $pets->count() == 1 ? 'mājdzīvnieks' : 'mājdzīvnieki' }}
+                </span>
 
-        </div>
+            </section>
 
-    @else
 
-        <div class="no-pets">
-            <p>Sistēmā pašlaik nav pievienotu mājdzīvnieku.</p>
-        </div>
+            <!-- MĀJDZĪVNIEKU REŽĢIS -->
 
-    @endif
+            <section class="admin-pets-grid">
 
-</div>
+                @foreach ($pets as $pet)
+
+                    <article class="admin-pet-card">
+
+                        <!-- ATTĒLS -->
+
+                        <div class="admin-pet-media">
+
+                            @if ($pet->images->count() > 0)
+
+                                <img
+                                    src="{{ asset('storage/' . $pet->images->first()->image) }}"
+                                    alt="{{ $pet->name }}"
+                                    class="admin-pet-main-image"
+                                >
+
+                                @if ($pet->images->count() > 1)
+
+                                    <span class="admin-pet-image-count">
+                                        📷 {{ $pet->images->count() }}
+                                    </span>
+
+                                @endif
+
+                            @else
+
+                                <div class="admin-pet-no-image">
+                                    🐾
+                                </div>
+
+                            @endif
+
+                        </div>
+
+
+                        <!-- SATURS -->
+
+                        <div class="admin-pet-content">
+
+                            <div class="admin-pet-heading">
+
+                                <div>
+
+                                    <span class="admin-pet-species">
+                                        {{ $pet->species }}
+                                    </span>
+
+                                    <h2>
+                                        {{ $pet->name }}
+                                    </h2>
+
+                                </div>
+
+                                <div class="admin-pet-icon">
+                                    🐾
+                                </div>
+
+                            </div>
+
+
+                            <!-- ĪPAŠNIEKS -->
+
+                            <div class="admin-pet-owner">
+
+                                <div class="admin-pet-owner-avatar">
+                                    {{ mb_strtoupper(mb_substr($pet->user->name, 0, 1)) }}
+                                </div>
+
+                                <div>
+
+                                    <span>
+                                        Īpašnieks
+                                    </span>
+
+                                    <strong>
+                                        {{ $pet->user->name }}
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- INFORMĀCIJA -->
+
+                            <div class="admin-pet-info-grid">
+
+                                <div class="admin-pet-info-item">
+
+                                    <span>
+                                        Šķirne
+                                    </span>
+
+                                    <strong>
+                                        {{ $pet->breed ?? 'Nav norādīta' }}
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="admin-pet-info-item">
+
+                                    <span>
+                                        Vecums
+                                    </span>
+
+                                    <strong>
+                                        {{ $pet->age !== null ? $pet->age . ' gadi' : 'Nav norādīts' }}
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="admin-pet-info-item">
+
+                                    <span>
+                                        Svars
+                                    </span>
+
+                                    <strong>
+                                        {{ $pet->weight !== null ? $pet->weight . ' kg' : 'Nav norādīts' }}
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- ĪPAŠĀS PRASĪBAS -->
+
+                            <div class="admin-pet-requirements">
+
+                                <span>
+                                    Īpašās prasības
+                                </span>
+
+                                <p>
+                                    {{ $pet->special_requirements ?? 'Īpašas prasības nav norādītas.' }}
+                                </p>
+
+                            </div>
+
+
+                            <!-- PAPILDU ATTĒLI -->
+
+                            @if ($pet->images->count() > 1)
+
+                                <div class="admin-pet-gallery">
+
+                                    @foreach ($pet->images->skip(1) as $image)
+
+                                        <img
+                                            src="{{ asset('storage/' . $image->image) }}"
+                                            alt="{{ $pet->name }}"
+                                            class="admin-pet-gallery-image"
+                                        >
+
+                                    @endforeach
+
+                                </div>
+
+                            @endif
+
+
+                            <!-- ADMINISTRATORA DARBĪBA -->
+
+                            <div class="admin-pet-actions">
+
+                                <form
+                                    action="/admin/pets/{{ $pet->id }}"
+                                    method="POST"
+                                    onsubmit="return confirm('Vai tiešām vēlaties noņemt šo mājdzīvnieku un tā saturu?');"
+                                >
+
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button
+                                        type="submit"
+                                        class="danger-button"
+                                    >
+                                        🗑️ Noņemt mājdzīvnieku
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                @endforeach
+
+            </section>
+
+
+        @else
+
+            <!-- TUKŠS STĀVOKLIS -->
+
+            <section class="admin-empty-state">
+
+                <div class="empty-state-icon">
+                    🐾
+                </div>
+
+                <h2>
+                    Sistēmā nav mājdzīvnieku
+                </h2>
+
+                <p>
+                    Pašlaik neviens lietotājs sistēmā nav
+                    pievienojis mājdzīvnieku.
+                </p>
+
+            </section>
+
+        @endif
+
+    </main>
 
 </body>
 </html>

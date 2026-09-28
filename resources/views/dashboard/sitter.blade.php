@@ -1,4 +1,3 @@
-```blade
 <!DOCTYPE html>
 <html lang="lv">
 <head>
@@ -16,72 +15,217 @@
 
     <main class="page-container">
 
-        <div class="card">
+        <!-- SVEICIENA BLOKS -->
 
-            <p class="subtitle">🐾 ĶepuDraugs.lv</p>
+        <section class="dashboard-hero">
 
-            <h1 class="page-title">
-                Sveiks, {{ auth()->user()->name }}!
-            </h1>
+            <div class="dashboard-hero-content">
 
-            <p class="page-description">
-                Šeit vari pārvaldīt savu pieskatītāja profilu,
-                apskatīt saņemtās rezervācijas un sazināties ar
-                mājdzīvnieku īpašniekiem.
-            </p>
-
-        </div>
-
-        <div class="features">
-
-            <div class="feature">
-                <div class="feature-icon">👤</div>
-
-                <h3>Mans profils</h3>
-
-                <p>
-                    Apskati un rediģē savu lietotāja profilu.
+                <p class="section-label">
+                    Pieskatītāja panelis
                 </p>
 
-                <a href="/profile" class="main-button">
-                    Apskatīt
-                </a>
-            </div>
-
-            <div class="feature">
-                <div class="feature-icon">📅</div>
-
-                <h3>Saņemtās rezervācijas</h3>
+                <h1>
+                    Sveiks, {{ auth()->user()->name }}!
+                </h1>
 
                 <p>
-                    Apskati rezervāciju pieprasījumus un
-                    pārvaldi to statusus.
+                    Pārvaldi savu pieskatītāja profilu, apskati
+                    saņemtās rezervācijas un sazinies ar
+                    mājdzīvnieku īpašniekiem vienuviet.
                 </p>
 
-                <a href="/bookings/sitter" class="main-button">
-                    Apskatīt
-                </a>
+                <div class="dashboard-hero-actions">
+
+                    <a
+                        href="/bookings/sitter"
+                        class="main-button"
+                    >
+                        📅 Saņemtās rezervācijas
+                    </a>
+
+                    <a
+                        href="/sitter-profile"
+                        class="secondary-button"
+                    >
+                        Mans pieskatītāja profils
+                    </a>
+
+                </div>
+
             </div>
 
-            <div class="feature">
-                <div class="feature-icon">🐕</div>
 
-                <h3>Pieskatīšanas pakalpojumi</h3>
+            <div class="dashboard-hero-visual">
+
+                <div class="dashboard-paw">
+                    🐾
+                </div>
+
+                <span>
+                    ĶepuDraugs.lv
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <!-- ĀTRĀS DARBĪBAS -->
+
+        <section class="dashboard-section">
+
+            <div class="dashboard-section-heading">
+
+                <div>
+
+                    <p class="section-label">
+                        Ātrās darbības
+                    </p>
+
+                    <h2>
+                        Ko vēlies darīt?
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="dashboard-actions-grid">
+
+                <!-- LIETOTĀJA PROFILS -->
+
+                <article class="dashboard-action-card">
+
+                    <div class="dashboard-action-icon">
+                        👤
+                    </div>
+
+                    <div class="dashboard-action-content">
+
+                        <h3>
+                            Mans profils
+                        </h3>
+
+                        <p>
+                            Apskati un rediģē sava ĶepuDraugs.lv
+                            konta pamatinformāciju.
+                        </p>
+
+                    </div>
+
+                    <a
+                        href="/profile"
+                        class="dashboard-card-link"
+                    >
+                        Apskatīt profilu
+                        <span>→</span>
+                    </a>
+
+                </article>
+
+
+                <!-- REZERVĀCIJAS -->
+
+                <article class="dashboard-action-card">
+
+                    <div class="dashboard-action-icon">
+                        📅
+                    </div>
+
+                    <div class="dashboard-action-content">
+
+                        <h3>
+                            Saņemtās rezervācijas
+                        </h3>
+
+                        <p>
+                            Apskati mājdzīvnieku īpašnieku
+                            rezervāciju pieprasījumus un pārvaldi to statusus.
+                        </p>
+
+                    </div>
+
+                    <a
+                        href="/bookings/sitter"
+                        class="dashboard-card-link"
+                    >
+                        Skatīt rezervācijas
+                        <span>→</span>
+                    </a>
+
+                </article>
+
+
+                <!-- PIESKATĪTĀJA PROFILS -->
+
+                <article class="dashboard-action-card">
+
+                    <div class="dashboard-action-icon">
+                        🐕
+                    </div>
+
+                    <div class="dashboard-action-content">
+
+                        <h3>
+                            Pieskatītāja profils
+                        </h3>
+
+                        <p>
+                            Pārvaldi savu aprakstu, pieredzi,
+                            cenu un pieskatāmo dzīvnieku informāciju.
+                        </p>
+
+                    </div>
+
+                    <a
+                        href="/sitter-profile"
+                        class="dashboard-card-link"
+                    >
+                        Atvērt profilu
+                        <span>→</span>
+                    </a>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- INFORMĀCIJAS BLOKS -->
+
+        <section class="dashboard-info-card">
+
+            <div class="dashboard-info-icon">
+                💡
+            </div>
+
+            <div>
+
+                <h3>
+                    Uzturi savu profilu aktuālu
+                </h3>
 
                 <p>
-                    Piedāvā mājdzīvnieku īpašniekiem savus
-                    pieskatīšanas pakalpojumus.
+                    Pārliecinies, ka tavā pieskatītāja profilā ir
+                    norādīta aktuāla pilsēta, pieredze, cena un
+                    mājdzīvnieki, kurus esi gatavs pieskatīt.
                 </p>
 
-                <a href="/sitter-profile" class="main-button">
-                    Mans profils
-                </a>
             </div>
 
-        </div>
+            <a
+                href="/sitter-profile"
+                class="secondary-button"
+            >
+                Pārbaudīt profilu
+            </a>
+
+        </section>
 
     </main>
 
 </body>
 </html>
-```

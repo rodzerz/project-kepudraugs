@@ -1,4 +1,3 @@
-```blade
 <!DOCTYPE html>
 <html lang="lv">
 <head>
@@ -22,67 +21,87 @@
 
     @endif
 
+
     <main class="page-container">
 
-        <div class="form-container">
+        <!-- LAPAS GALVENE -->
 
-            <div class="card">
+        <section class="account-page-header">
 
-                <div style="text-align: center;">
+            <div>
 
-                    <div class="feature-icon">
-                        👤
-                    </div>
+                <p class="section-label">
+                    Mans konts
+                </p>
 
-                    <p class="subtitle">
-                        🐾 ĶepuDraugs.lv
-                    </p>
+                <h1 class="page-title">
+                    Mans profils
+                </h1>
 
-                    <h1 class="page-title">
-                        Mans profils
-                    </h1>
+                <p class="page-description">
+                    Apskati un pārvaldi sava ĶepuDraugs.lv konta
+                    pamatinformāciju.
+                </p>
 
-                    <p class="page-description">
-                        Tava konta pamatinformācija.
-                    </p>
+            </div>
 
+        </section>
+
+
+        @if (session('success'))
+
+            <div class="alert alert-success">
+                <strong>{{ session('success') }}</strong>
+            </div>
+
+        @endif
+
+
+        <!-- PROFILA KARTĪTE -->
+
+        <section class="account-profile-card">
+
+            <div class="account-profile-top">
+
+                <div class="account-avatar">
+                    {{ mb_strtoupper(mb_substr($user->name, 0, 1)) }}
                 </div>
 
-                @if (session('success'))
 
-                    <div class="alert alert-success">
-                        <strong>{{ session('success') }}</strong>
-                    </div>
+                <div class="account-profile-identity">
 
-                @endif
+                    <p class="section-label">
+                        ĶepuDraugs.lv lietotājs
+                    </p>
 
-                <div style="margin-top: 30px;">
-
-                    <p>
-                        <strong>👤 Vārds</strong><br>
+                    <h2>
                         {{ $user->name }}
-                    </p>
+                    </h2>
 
-                    <p>
-                        <strong>✉️ E-pasts</strong><br>
-                        {{ $user->email }}
-                    </p>
 
-                    <p>
-                        <strong>🐾 Lietotāja veids</strong><br>
+                    @if ($user->role === 'owner')
 
-                        @if ($user->role === 'owner')
-                            Mājdzīvnieka īpašnieks
-                        @elseif ($user->role === 'sitter')
-                            Mājdzīvnieku pieskatītājs
-                        @endif
-                    </p>
+                        <span class="account-role">
+                            🐾 Mājdzīvnieka īpašnieks
+                        </span>
+
+                    @elseif ($user->role === 'sitter')
+
+                        <span class="account-role">
+                            🐕 Mājdzīvnieku pieskatītājs
+                        </span>
+
+                    @endif
 
                 </div>
 
-                <div style="margin-top: 30px;">
 
-                    <a href="/profile/edit" class="main-button">
+                <div class="account-profile-action">
+
+                    <a
+                        href="/profile/edit"
+                        class="main-button"
+                    >
                         ✏️ Rediģēt profilu
                     </a>
 
@@ -90,10 +109,111 @@
 
             </div>
 
-        </div>
+
+            <div class="account-profile-divider"></div>
+
+
+            <!-- KONTA INFORMĀCIJA -->
+
+            <div class="account-info-heading">
+
+                <h3>
+                    Konta informācija
+                </h3>
+
+                <p>
+                    Šeit redzama tava konta pamatinformācija.
+                </p>
+
+            </div>
+
+
+            <div class="account-info-grid">
+
+                <!-- VĀRDS -->
+
+                <div class="account-info-item">
+
+                    <div class="account-info-icon">
+                        👤
+                    </div>
+
+                    <div>
+
+                        <span class="account-info-label">
+                            Vārds
+                        </span>
+
+                        <strong>
+                            {{ $user->name }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- E-PASTS -->
+
+                <div class="account-info-item">
+
+                    <div class="account-info-icon">
+                        ✉️
+                    </div>
+
+                    <div>
+
+                        <span class="account-info-label">
+                            E-pasts
+                        </span>
+
+                        <strong>
+                            {{ $user->email }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- LOMA -->
+
+                <div class="account-info-item">
+
+                    <div class="account-info-icon">
+                        🐾
+                    </div>
+
+                    <div>
+
+                        <span class="account-info-label">
+                            Lietotāja veids
+                        </span>
+
+
+                        <strong>
+
+                            @if ($user->role === 'owner')
+
+                                Mājdzīvnieka īpašnieks
+
+                            @elseif ($user->role === 'sitter')
+
+                                Mājdzīvnieku pieskatītājs
+
+                            @endif
+
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
 
     </main>
 
 </body>
 </html>
-```

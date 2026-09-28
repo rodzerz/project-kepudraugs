@@ -1,4 +1,3 @@
-```blade
 <!DOCTYPE html>
 <html lang="lv">
 <head>
@@ -10,34 +9,104 @@
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>
 
-<body>
+<body class="auth-page">
 
-    <main class="page-container">
+    <header class="header">
+        <div class="header-content">
 
-        <div class="form-container">
+            <a href="/" class="logo">
+                <span class="logo-icon">🐾</span>
+                ĶepuDraugs.lv
+            </a>
 
-            <div class="card">
+            <div class="header-actions">
 
-                <div style="text-align: center;">
+                <span class="auth-header-text">
+                    Vēl nav konta?
+                </span>
 
-                    <div class="feature-icon">
-                        🐾
+                <a href="/register" class="main-button">
+                    Reģistrēties
+                </a>
+
+            </div>
+
+        </div>
+    </header>
+
+
+    <main class="auth-main">
+
+        <div class="auth-container">
+
+            <!-- Kreisā puse -->
+
+            <div class="auth-intro">
+
+                <div class="auth-icon">
+                    🐾
+                </div>
+
+                <p class="section-label">
+                    ĶepuDraugs.lv
+                </p>
+
+                <h1>
+                    Laipni lūdzam atpakaļ!
+                </h1>
+
+                <p>
+                    Ielogojies savā kontā un turpini pārvaldīt
+                    mājdzīvniekus, rezervācijas un saziņu vienuviet.
+                </p>
+
+                <div class="auth-benefits">
+
+                    <div class="auth-benefit">
+                        <span>✓</span>
+
+                        <p>
+                            Pārvaldi savas rezervācijas
+                        </p>
                     </div>
 
-                    <p class="subtitle">
-                        ĶepuDraugs.lv
-                    </p>
+                    <div class="auth-benefit">
+                        <span>✓</span>
 
-                    <h1 class="page-title">
-                        Laipni lūdzam atpakaļ!
-                    </h1>
+                        <p>
+                            Sazinies ar īpašniekiem un pieskatītājiem
+                        </p>
+                    </div>
 
-                    <p class="page-description">
-                        Ielogojies savā kontā, lai turpinātu izmantot
-                        ĶepuDraugs.lv.
+                    <div class="auth-benefit">
+                        <span>✓</span>
+
+                        <p>
+                            Ērti piekļūsti savam profilam un informācijai
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Labā puse -->
+
+            <div class="auth-card">
+
+                <div class="auth-card-heading">
+
+                    <h2>
+                        Ielogoties
+                    </h2>
+
+                    <p>
+                        Ievadi sava konta piekļuves datus.
                     </p>
 
                 </div>
+
 
                 @if ($errors->any())
 
@@ -51,14 +120,16 @@
 
                 @endif
 
+
                 <form action="/login" method="POST">
 
                     @csrf
 
+
                     <div class="form-group">
 
                         <label for="email">
-                            ✉️ E-pasts
+                            E-pasts
                         </label>
 
                         <input
@@ -67,15 +138,17 @@
                             name="email"
                             value="{{ old('email') }}"
                             placeholder="piemers@epasts.lv"
+                            autocomplete="email"
                             required
                         >
 
                     </div>
 
+
                     <div class="form-group">
 
                         <label for="password">
-                            🔒 Parole
+                            Parole
                         </label>
 
                         <input
@@ -83,24 +156,30 @@
                             id="password"
                             name="password"
                             placeholder="Ievadi savu paroli"
+                            autocomplete="current-password"
                             required
                         >
 
                     </div>
 
-                    <button type="submit">
-                        🔐 Ielogoties
+
+                    <button
+                        type="submit"
+                        class="auth-submit-button"
+                    >
+                        Ielogoties
                     </button>
 
                 </form>
 
-                <div style="text-align: center; margin-top: 25px;">
 
-                    <p>
+                <div class="auth-login-link">
+
+                    <span>
                         Vēl nav konta?
-                    </p>
+                    </span>
 
-                    <a href="/register" class="secondary-button">
+                    <a href="/register">
                         Izveidot kontu
                     </a>
 
@@ -114,4 +193,3 @@
 
 </body>
 </html>
-```

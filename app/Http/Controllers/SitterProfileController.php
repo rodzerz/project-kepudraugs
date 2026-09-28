@@ -11,11 +11,19 @@ class SitterProfileController extends Controller
 {
     public function create()
     {
+        if (Auth::user()->role !== 'sitter') {
+            abort(403);
+        }
+
         return view('sitter-profile.create');
     }
 
     public function store(Request $request)
     {
+        if (Auth::user()->role !== 'sitter') {
+            abort(403);
+        }
+
         $validated = $request->validate([
             'city' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -32,6 +40,10 @@ class SitterProfileController extends Controller
 
     public function show()
     {
+        if (Auth::user()->role !== 'sitter') {
+            abort(403);
+        }
+
         $profile = Auth::user()->sitterProfile;
 
         if (!$profile) {
@@ -54,22 +66,58 @@ class SitterProfileController extends Controller
 
     public function index(Request $request)
     {
+        if (Auth::user()->role !== 'owner') {
+            abort(403);
+        }
+
         $query = SitterProfile::with('user');
 
+        // Filtrēšana pēc pilsētas
         if ($request->filled('city')) {
-            $query->where('city', 'like', '%' . $request->city . '%');
+            $query->where(
+                'city',
+                'like',
+                '%' . $request->city . '%'
+            );
+        }
+
+        // Kārtošana pēc cenas
+        if ($request->price_sort === 'low_to_high') {
+            $query->orderBy('price', 'asc');
+        }
+
+        if ($request->price_sort === 'high_to_low') {
+            $query->orderBy('price', 'desc');
         }
 
         $profiles = $query->get();
 
+        // Aprēķina katra pieskatītāja vidējo vērtējumu
         foreach ($profiles as $profile) {
-
-            $reviews = Review::where('sitter_id', $profile->user_id)->get();
+            $reviews = Review::where(
+                'sitter_id',
+                $profile->user_id
+            )->get();
 
             $profile->average_rating = $reviews->avg('rating');
             $profile->reviews_count = $reviews->count();
         }
 
-        return view('sitter-profile.index', compact('profiles'));
+        // Filtrēšana pēc minimālā vērtējuma
+        if ($request->filled('min_rating')) {
+            $minRating = (float) $request->min_rating;
+
+            $profiles = $profiles
+                ->filter(function ($profile) use ($minRating) {
+                    return $profile->average_rating !== null
+                        && $profile->average_rating >= $minRating;
+                })
+                ->values();
+        }
+
+        return view(
+            'sitter-profile.index',
+            compact('profiles')
+        );
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Pet;
@@ -9,18 +10,33 @@ class PetController extends Controller
 {
     public function index()
     {
-        $pets = Auth::user()->pets()->with('images')->get();
+        if (Auth::user()->role !== 'owner') {
+            abort(403);
+        }
+
+        $pets = Auth::user()
+            ->pets()
+            ->with('images')
+            ->get();
 
         return view('pets.index', compact('pets'));
     }
 
     public function create()
     {
+        if (Auth::user()->role !== 'owner') {
+            abort(403);
+        }
+
         return view('pets.create');
     }
 
     public function store(Request $request)
     {
+        if (Auth::user()->role !== 'owner') {
+            abort(403);
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'species' => 'required|string|max:255',
@@ -43,9 +59,7 @@ class PetController extends Controller
         ]);
 
         if ($request->hasFile('images')) {
-
             foreach ($request->file('images') as $image) {
-
                 $path = $image->store('pets', 'public');
 
                 $pet->images()->create([
@@ -60,6 +74,10 @@ class PetController extends Controller
 
     public function destroy($pet)
     {
+        if (Auth::user()->role !== 'owner') {
+            abort(403);
+        }
+
         $pet = Pet::findOrFail($pet);
 
         if ($pet->user_id !== Auth::id()) {
@@ -72,4 +90,3 @@ class PetController extends Controller
             ->with('success', 'Mājdzīvnieks veiksmīgi izdzēsts!');
     }
 }
-
