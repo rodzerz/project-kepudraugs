@@ -16,9 +16,16 @@ class RegisterController extends Controller
     public function register(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|min:6|regex:/[a-zA-ZĀ-ž]/',
+            'name' => 'required|string|max:255|regex:/[a-zA-ZĀ-ž]/',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6|confirmed',
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'confirmed',
+                'regex:/[A-Z]/',
+                'regex:/[0-9]/',
+            ],
             'role' => 'required|in:owner,sitter',
         ]);
 
@@ -29,6 +36,7 @@ class RegisterController extends Controller
             'role' => $validated['role'],
         ]);
 
-        return redirect('/register')->with('success', 'Reģistrācija veiksmīga!');
+        return redirect('/register')
+            ->with('success', 'Reģistrācija veiksmīga!');
     }
 }

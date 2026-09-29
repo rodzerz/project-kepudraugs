@@ -2533,7 +2533,7 @@ tr:last-child td {
 .pet-card-media {
     position: relative;
 
-    height: 260px;
+    height: 320px;
 
     overflow: hidden;
 
@@ -2541,10 +2541,13 @@ tr:last-child td {
 }
 
 .pet-main-image {
-    width: 100%;
+     width: 100%;
     height: 100%;
 
-    object-fit: cover;
+    object-fit: contain;
+    object-position: center;
+
+    background: #f3f5f3;
 }
 
 .pet-image-count {

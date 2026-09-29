@@ -143,7 +143,7 @@
                         >
 
                         <span class="form-help">
-                            Vārdam jābūt vismaz 6 rakstzīmes garam.
+                            Norādi savu vārdu.
                         </span>
 
                     </div>
