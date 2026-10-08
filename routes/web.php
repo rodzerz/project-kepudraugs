@@ -1,3 +1,4 @@
+
 <?php
 
 use Illuminate\Support\Facades\Route;
@@ -32,7 +33,6 @@ Route::post('/login', [LoginController::class, 'login']);
 
 Route::post('/logout', [LoginController::class, 'logout']);
 
-
 /*
 |--------------------------------------------------------------------------
 | Autorizēti lietotāji
@@ -49,7 +49,6 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index']);
 
-
     /*
     |--------------------------------------------------------------------------
     | Lietotāja profils
@@ -59,7 +58,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::get('/profile/edit', [ProfileController::class, 'edit']);
     Route::put('/profile', [ProfileController::class, 'update']);
-
 
     /*
     |--------------------------------------------------------------------------
@@ -72,7 +70,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/pets', [PetController::class, 'store']);
     Route::delete('/pets/{pet}', [PetController::class, 'destroy']);
 
-
     /*
     |--------------------------------------------------------------------------
     | Pieskatītāju profili
@@ -81,6 +78,11 @@ Route::middleware('auth')->group(function () {
 
     Route::get(
         '/sitter-profile/create',
+        [SitterProfileController::class, 'create']
+    );
+
+    Route::get(
+        '/sitter-profile/edit',
         [SitterProfileController::class, 'create']
     );
 
@@ -98,7 +100,6 @@ Route::middleware('auth')->group(function () {
         '/sitters',
         [SitterProfileController::class, 'index']
     );
-
 
     /*
     |--------------------------------------------------------------------------
@@ -146,7 +147,6 @@ Route::middleware('auth')->group(function () {
         [BookingController::class, 'complete']
     );
 
-
     /*
     |--------------------------------------------------------------------------
     | Sarakste
@@ -163,7 +163,6 @@ Route::middleware('auth')->group(function () {
         [MessageController::class, 'store']
     );
 
-
     /*
     |--------------------------------------------------------------------------
     | Atsauksmes
@@ -179,7 +178,6 @@ Route::middleware('auth')->group(function () {
         '/bookings/{booking}/review',
         [ReviewController::class, 'store']
     );
-
 
     /*
     |--------------------------------------------------------------------------

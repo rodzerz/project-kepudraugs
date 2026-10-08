@@ -1,10 +1,13 @@
+
 <!DOCTYPE html>
 <html lang="lv">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Izveidot pieskatītāja profilu - ĶepuDraugs.lv</title>
+    <title>
+        {{ $profile ? 'Rediģēt' : 'Izveidot' }} pieskatītāja profilu - ĶepuDraugs.lv
+    </title>
 
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>
@@ -29,13 +32,18 @@
                 </p>
 
                 <h1 class="page-title">
-                    Izveido savu pieskatītāja profilu
+                    {{ $profile ? 'Rediģēt pieskatītāja profilu' : 'Izveido savu pieskatītāja profilu' }}
                 </h1>
 
                 <p class="page-description">
-                    Norādi informāciju par sevi, savu pieredzi un
-                    mājdzīvniekiem, kurus esi gatavs pieskatīt.
-                    Šī informācija būs redzama mājdzīvnieku īpašniekiem.
+                    @if ($profile)
+                        Atjaunini informāciju par sevi, savu pieredzi un
+                        mājdzīvniekiem, kurus esi gatavs pieskatīt.
+                    @else
+                        Norādi informāciju par sevi, savu pieredzi un
+                        mājdzīvniekiem, kurus esi gatavs pieskatīt.
+                        Šī informācija būs redzama mājdzīvnieku īpašniekiem.
+                    @endif
                 </p>
             </div>
 
@@ -56,7 +64,7 @@
                         </p>
 
                         <h2>
-                            Pastāsti par sevi
+                            {{ $profile ? 'Atjaunini savu informāciju' : 'Pastāsti par sevi' }}
                         </h2>
                     </div>
 
@@ -105,7 +113,7 @@
                             type="text"
                             id="city"
                             name="city"
-                            value="{{ old('city') }}"
+                            value="{{ old('city', $profile?->city) }}"
                             placeholder="Piemēram, Rīga"
                             required
                         >
@@ -129,7 +137,7 @@
                             id="description"
                             name="description"
                             placeholder="Pastāsti nedaudz par sevi..."
-                        >{{ old('description') }}</textarea>
+                        >{{ old('description', $profile?->description) }}</textarea>
 
                         <span class="form-help">
                             Īss apraksts palīdz mājdzīvnieku īpašniekiem
@@ -151,7 +159,7 @@
                             id="experience"
                             name="experience"
                             placeholder="Apraksti savu pieredzi darbā ar mājdzīvniekiem..."
-                        >{{ old('experience') }}</textarea>
+                        >{{ old('experience', $profile?->experience) }}</textarea>
 
                         <span class="form-help">
                             Apraksti iepriekšējo pieredzi ar suņiem,
@@ -177,8 +185,9 @@
                                     type="number"
                                     id="price"
                                     name="price"
-                                    value="{{ old('price') }}"
+                                    value="{{ old('price', $profile?->price) }}"
                                     min="0"
+                                    max="999999.99"
                                     step="0.01"
                                     placeholder="15.00"
                                     required
@@ -203,7 +212,7 @@
                                 type="text"
                                 id="accepted_animals"
                                 name="accepted_animals"
-                                value="{{ old('accepted_animals') }}"
+                                value="{{ old('accepted_animals', $profile?->accepted_animals) }}"
                                 placeholder="Suņi, kaķi, truši"
                                 required
                             >
@@ -229,7 +238,7 @@
                             type="submit"
                             class="main-button profile-save-button"
                         >
-                            Izveidot profilu
+                            {{ $profile ? 'Saglabāt izmaiņas' : 'Izveidot profilu' }}
                         </button>
 
                     </div>
@@ -257,43 +266,23 @@
                 </p>
 
                 <div class="profile-tip">
-
                     <span>✓</span>
-
-                    <p>
-                        Norādi savu pieredzi ar mājdzīvniekiem.
-                    </p>
-
+                    <p>Norādi savu pieredzi ar mājdzīvniekiem.</p>
                 </div>
 
                 <div class="profile-tip">
-
                     <span>✓</span>
-
-                    <p>
-                        Skaidri norādi, kādus dzīvniekus pieskati.
-                    </p>
-
+                    <p>Skaidri norādi, kādus dzīvniekus pieskati.</p>
                 </div>
 
                 <div class="profile-tip">
-
                     <span>✓</span>
-
-                    <p>
-                        Izvēlies atbilstošu cenu par vienu dienu.
-                    </p>
-
+                    <p>Izvēlies atbilstošu cenu par vienu dienu.</p>
                 </div>
 
                 <div class="profile-tip">
-
                     <span>✓</span>
-
-                    <p>
-                        Uzraksti īsu un saprotamu aprakstu par sevi.
-                    </p>
-
+                    <p>Uzraksti īsu un saprotamu aprakstu par sevi.</p>
                 </div>
 
             </aside>
