@@ -39,7 +39,7 @@ Route::post('/logout', [LoginController::class, 'logout']);
 |--------------------------------------------------------------------------
 */
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'not_blocked'])->group(function () {
 
     /*
     |--------------------------------------------------------------------------

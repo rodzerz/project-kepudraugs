@@ -1,3 +1,4 @@
+
 <?php
 
 namespace App\Http\Controllers;
@@ -72,6 +73,16 @@ class AdminController extends Controller
                 );
         }
 
+        // Administrators nevar bloķēt citu administratoru
+        if ($user->role === 'admin') {
+            return redirect('/admin')
+                ->with(
+                    'error',
+                    'Administratoru kontus nevar bloķēt!'
+                );
+        }
+
+        // Bloķē vai atbloķē parastu lietotāju
         $user->update([
             'is_blocked' => !$user->is_blocked,
         ]);
