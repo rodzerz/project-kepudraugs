@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="lv">
 <head>
@@ -164,9 +165,11 @@
 
                     </div>
 
+                    <!-- KOPĒJAIS ZIŅOJUMU SKAITS -->
+
                     <span class="conversation-message-count">
-                        {{ $messages->count() }}
-                        {{ $messages->count() == 1 ? 'ziņa' : 'ziņas' }}
+                        {{ $messages->total() }}
+                        {{ $messages->total() == 1 ? 'ziņa' : 'ziņas' }}
                     </span>
 
                 </div>
@@ -258,6 +261,70 @@
                     @endforelse
 
                 </div>
+
+
+                <!-- SARAKSTES LAPOŠANA -->
+
+                @if ($messages->hasPages())
+
+                    <div
+                        class="conversation-pagination"
+                        style="
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            gap: 12px;
+                            margin: 20px 0;
+                            flex-wrap: wrap;
+                        "
+                    >
+
+                        <!-- VECĀKAS ZIŅAS -->
+
+                        <div>
+
+                            @if ($messages->hasMorePages())
+
+                                <a
+                                    href="{{ $messages->nextPageUrl() }}"
+                                    class="secondary-button"
+                                >
+                                    ← Vecākas ziņas
+                                </a>
+
+                            @endif
+
+                        </div>
+
+
+                        <!-- LAPAS NUMURS -->
+
+                        <span>
+                            Lapa {{ $messages->currentPage() }}
+                            no {{ $messages->lastPage() }}
+                        </span>
+
+
+                        <!-- JAUNĀKAS ZIŅAS -->
+
+                        <div>
+
+                            @if (!$messages->onFirstPage())
+
+                                <a
+                                    href="{{ $messages->previousPageUrl() }}"
+                                    class="secondary-button"
+                                >
+                                    Jaunākas ziņas →
+                                </a>
+
+                            @endif
+
+                        </div>
+
+                    </div>
+
+                @endif
 
 
                 <!-- ZIŅAS NOSŪTĪŠANA -->

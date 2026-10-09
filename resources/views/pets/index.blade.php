@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="lv">
 <head>
@@ -12,7 +13,6 @@
 <body>
 
     <x-owner-nav />
-
 
     <main class="page-container">
 
@@ -37,7 +37,6 @@
 
             </div>
 
-
             <a
                 href="/pets/create"
                 class="main-button"
@@ -46,7 +45,6 @@
             </a>
 
         </section>
-
 
         <!-- PAZIŅOJUMS -->
 
@@ -59,7 +57,6 @@
             </div>
 
         @endif
-
 
         <!-- MĀJDZĪVNIEKI -->
 
@@ -101,7 +98,6 @@
 
                         </div>
 
-
                         <!-- GALVENE -->
 
                         <div class="pet-card-content">
@@ -126,7 +122,6 @@
 
                             </div>
 
-
                             <!-- INFORMĀCIJA -->
 
                             <div class="pet-info-grid">
@@ -143,7 +138,6 @@
 
                                 </div>
 
-
                                 <div class="pet-info-item">
 
                                     <span>
@@ -158,7 +152,6 @@
                                     </strong>
 
                                 </div>
-
 
                                 <div class="pet-info-item">
 
@@ -177,7 +170,6 @@
 
                             </div>
 
-
                             <!-- ĪPAŠĀS PRASĪBAS -->
 
                             <div class="pet-requirements">
@@ -193,7 +185,6 @@
                                 </p>
 
                             </div>
-
 
                             <!-- PAPILDU ATTĒLI -->
 
@@ -215,10 +206,20 @@
 
                             @endif
 
-
-                            <!-- DZĒŠANA -->
+                            <!-- REDIĢĒŠANA UN DZĒŠANA -->
 
                             <div class="pet-card-actions">
+
+                                <!-- REDIĢĒŠANAS POGA -->
+
+                                <a
+                                    href="{{ route('pets.edit', $pet->id) }}"
+                                    class="secondary-button"
+                                >
+                                    ✏️ Rediģēt
+                                </a>
+
+                                <!-- DZĒŠANAS POGA -->
 
                                 <form
                                     action="/pets/{{ $pet->id }}"
@@ -247,7 +248,6 @@
                 @endforeach
 
             </section>
-
 
         @else
 

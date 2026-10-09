@@ -62,12 +62,16 @@ class SitterProfileController extends Controller
             return redirect('/sitter-profile/create');
         }
 
+        // Ielādē ne vairāk kā 10 atsauksmes vienā lapā.
         $reviews = Review::where('sitter_id', Auth::id())
             ->with('owner')
-            ->latest()
-            ->get();
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->paginate(10);
 
-        $averageRating = $reviews->avg('rating');
+        // Vidējo vērtējumu aprēķina no VISĀM atsauksmēm.
+        $averageRating = Review::where('sitter_id', Auth::id())
+            ->avg('rating');
 
         return view('sitter-profile.show', compact(
             'profile',
@@ -96,6 +100,35 @@ class SitterProfileController extends Controller
             );
         }
 
+        // Atsauksmju statistika tiek aprēķināta datubāzē.
+        // Sasaistām pēc user_id, jo Review glabā sitter_id.
+        $query->addSelect([
+            'average_rating' => Review::query()
+                ->selectRaw('AVG(rating)')
+                ->whereColumn(
+                    'reviews.sitter_id',
+                    'sitter_profiles.user_id'
+                ),
+
+            'reviews_count' => Review::query()
+                ->selectRaw('COUNT(*)')
+                ->whereColumn(
+                    'reviews.sitter_id',
+                    'sitter_profiles.user_id'
+                ),
+        ]);
+
+        if ($request->filled('min_rating')) {
+            $minRating = (float) $request->min_rating;
+
+            $query->whereRaw(
+                '(SELECT AVG(rating)
+                  FROM reviews
+                  WHERE reviews.sitter_id = sitter_profiles.user_id) >= ?',
+                [$minRating]
+            );
+        }
+
         if ($request->price_sort === 'low_to_high') {
             $query->orderBy('price', 'asc');
         }
@@ -104,28 +137,14 @@ class SitterProfileController extends Controller
             $query->orderBy('price', 'desc');
         }
 
-        $profiles = $query->get();
+        // Nodrošina stabilu secību arī vienādu cenu gadījumā.
+        $query->orderBy('sitter_profiles.id', 'asc');
 
-        foreach ($profiles as $profile) {
-            $reviews = Review::where(
-                'sitter_id',
-                $profile->user_id
-            )->get();
-
-            $profile->average_rating = $reviews->avg('rating');
-            $profile->reviews_count = $reviews->count();
-        }
-
-        if ($request->filled('min_rating')) {
-            $minRating = (float) $request->min_rating;
-
-            $profiles = $profiles
-                ->filter(function ($profile) use ($minRating) {
-                    return $profile->average_rating !== null
-                        && $profile->average_rating >= $minRating;
-                })
-                ->values();
-        }
+        // Vienā lapā attēlo 12 pieskatītājus.
+        // Saglabā filtrus un kārtošanu, pārejot uz citu lapu.
+        $profiles = $query
+            ->paginate(12)
+            ->withQueryString();
 
         return view(
             'sitter-profile.index',

@@ -14,6 +14,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\PasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,6 +62,22 @@ Route::middleware(['auth', 'not_blocked'])->group(function () {
 
     /*
     |--------------------------------------------------------------------------
+    | Paroles maiņa
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/profile/password',
+        [PasswordController::class, 'edit']
+    )->name('password.edit');
+
+    Route::put(
+        '/profile/password',
+        [PasswordController::class, 'update']
+    )->name('password.update');
+
+    /*
+    |--------------------------------------------------------------------------
     | Mājdzīvnieki
     |--------------------------------------------------------------------------
     */
@@ -68,6 +85,18 @@ Route::middleware(['auth', 'not_blocked'])->group(function () {
     Route::get('/pets', [PetController::class, 'index']);
     Route::get('/pets/create', [PetController::class, 'create']);
     Route::post('/pets', [PetController::class, 'store']);
+
+    // Mājdzīvnieka rediģēšana
+    Route::get(
+        '/pets/{pet}/edit',
+        [PetController::class, 'edit']
+    )->name('pets.edit');
+
+    Route::put(
+        '/pets/{pet}',
+        [PetController::class, 'update']
+    )->name('pets.update');
+
     Route::delete('/pets/{pet}', [PetController::class, 'destroy']);
 
     /*
@@ -137,10 +166,17 @@ Route::middleware(['auth', 'not_blocked'])->group(function () {
         [BookingController::class, 'reject']
     );
 
+    // Īpašnieks atceļ savu rezervāciju.
     Route::post(
         '/bookings/{booking}/cancel',
         [BookingController::class, 'cancel']
     );
+
+    // Pieskatītājs atceļ savu pieņemto rezervāciju.
+    Route::post(
+        '/bookings/{booking}/sitter-cancel',
+        [BookingController::class, 'sitterCancel']
+    )->name('bookings.sitter-cancel');
 
     Route::post(
         '/bookings/{booking}/complete',

@@ -176,7 +176,7 @@
                         <div class="form-group">
 
                             <label for="price">
-                                Cena (€ / dienā) *
+                                Cena (€ / stundā) *
                             </label>
 
                             <div class="input-with-symbol">

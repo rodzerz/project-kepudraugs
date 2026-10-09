@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="lv">
 <head>
@@ -91,10 +92,18 @@
                             🐕 Mājdzīvnieku pieskatītājs
                         </span>
 
+                    @elseif ($user->role === 'admin')
+
+                        <span class="account-role">
+                            Administrators
+                        </span>
+
                     @endif
 
                 </div>
 
+
+                <!-- PROFILA DARBĪBAS -->
 
                 <div class="account-profile-action">
 
@@ -103,6 +112,13 @@
                         class="main-button"
                     >
                         ✏️ Rediģēt profilu
+                    </a>
+
+                    <a
+                        href="{{ route('password.edit') }}"
+                        class="secondary-button"
+                    >
+                        🔐 Mainīt paroli
                     </a>
 
                 </div>
@@ -190,7 +206,6 @@
                             Lietotāja veids
                         </span>
 
-
                         <strong>
 
                             @if ($user->role === 'owner')
@@ -200,6 +215,10 @@
                             @elseif ($user->role === 'sitter')
 
                                 Mājdzīvnieku pieskatītājs
+
+                            @elseif ($user->role === 'admin')
+
+                                Administrators
 
                             @endif
 

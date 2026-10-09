@@ -1,66 +1,76 @@
-# ĶepuDraugs.lv
+# ĶepuDraugs.lv — projekta palaišanas instrukcija
 
-ĶepuDraugs.lv ir Laravel tīmekļa lietotne, kas paredzēta mājdzīvnieku īpašnieku un pieskatītāju savstarpējai saziņai un rezervāciju veikšanai.
+Šajā instrukcijā aprakstīts, kā lejupielādēt un palaist ĶepuDraugs.lv projektu Windows datorā.
 
-## Projekta palaišanas instrukcija
+## 1. Nepieciešamās programmas
 
-### 1. Nepieciešamās programmas
+Pirms projekta lejupielādes datorā jābūt instalētām šādām programmām:
 
-Datorā jābūt instalētām:
+- **Laragon** — PHP un MySQL servera darbināšanai.
+- **Git** — projekta lejupielādei no GitHub.
+- **Composer** — projekta PHP atkarību instalēšanai.
 
-- [Laragon](https://laragon.org/)
-- [Git](https://git-scm.com/)
-- [Composer](https://getcomposer.org/)
+## 2. Projekta lejupielāde
 
-Nepieciešama PHP 8.3 vai jaunāka versija un MySQL.
+1. Atveriet **Laragon**.
+2. Nospiediet **Start All**, lai palaistu serverus.
+3. Atveriet **Laragon Terminal**.
+4. Izpildiet tālāk norādītās komandas.
 
-### 2. Projekta lejupielāde
-
-Atvērt **Laragon**, nospiest **Start All** un atvērt **Terminal**.
-
-Laragon terminālī izpildīt:
+Pārejiet uz Laragon projektu mapi:
 
 ```cmd
 cd C:\laragon\www
-git clone https://github.com/rodzerz/project-kepudraugs.git kepudraugs
-cd kepudraugs
 ```
 
-### 3. Projekta uzstādīšana
+Lejupielādējiet projektu no GitHub:
 
-Instalēt nepieciešamās bibliotēkas:
+```cmd
+git clone https://github.com/rodzerz/project-kepudraugs.git
+```
+
+Pārejiet uz projekta mapi:
+
+```cmd
+cd project-kepudraugs
+```
+
+## 3. Projekta atkarību instalēšana
+
+Terminālī izpildiet:
 
 ```cmd
 composer install
 ```
 
-Izveidot konfigurācijas failu:
+Sagaidiet, līdz instalēšana ir pabeigta.
+
+## 4. Laravel konfigurēšana
+
+Izveidojiet projekta konfigurācijas failu:
 
 ```cmd
 copy .env.example .env
 ```
 
-Ģenerēt Laravel lietotnes atslēgu:
+Ģenerējiet lietotnes atslēgu:
 
 ```cmd
 php artisan key:generate
 ```
 
-### 4. Datubāzes izveidošana
+## 5. Datubāzes izveide
 
-Laragon terminālī izpildīt:
+1. Pārliecinieties, ka Laragon ir palaists **MySQL**.
+2. Atveriet **HeidiSQL** vai citu MySQL datubāzu pārvaldības programmu.
+3. Izveidojiet jaunu tukšu datubāzi ar nosaukumu:
 
-```cmd
-mysql -u root -e "CREATE DATABASE IF NOT EXISTS kepudraugs;"
+```text
+kepudraugs
 ```
 
-Atvērt konfigurācijas failu:
-
-```cmd
-notepad .env
-```
-
-Pārbaudīt, vai datubāzes iestatījumi ir šādi:
+4. Projekta mapē atveriet `.env` failu.
+5. Atrodiet datubāzes iestatījumus un norādiet:
 
 ```env
 DB_CONNECTION=mysql
@@ -71,48 +81,78 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-Saglabāt failu un izpildīt:
+Šie iestatījumi paredzēti Laragon noklusējuma MySQL konfigurācijai. Ja datorā MySQL lietotājam ir parole vai tiek izmantots cits ports, iestatījumi jāpielāgo.
+
+Saglabājiet `.env` failu.
+
+Terminālī izpildiet:
 
 ```cmd
 php artisan config:clear
+```
+
+## 6. Datubāzes tabulu izveide
+
+Projekta mapē izpildiet:
+
+```cmd
 php artisan migrate
 ```
 
-### 5. Attēlu konfigurācija
+Šī komanda izveidos projektam nepieciešamās datubāzes tabulas.
 
-Izpildīt:
+## 7. Projekta palaišana
 
-```cmd
-php artisan storage:link
-```
-
-### 6. Projekta palaišana
-
-Laragon terminālī izpildīt:
+Terminālī izpildiet:
 
 ```cmd
 php artisan serve
 ```
 
-Pārlūkprogrammā atvērt:
+Atveriet interneta pārlūkprogrammu un ievadiet adresi:
 
 **http://127.0.0.1:8000**
 
-Projekts ir gatavs lietošanai!
+Ja Laravel terminālī norāda citu adresi vai portu, izmantojiet norādīto adresi.
 
-### 7. Atkārtota palaišana
+Lai apturētu serveri, terminālī nospiediet **Ctrl + C**.
 
-Nākamajās reizēs pietiek ar Laragon palaišanu (**Start All**) un šīm komandām:
+## 8. Iespējamās problēmas
+
+**Neizdodas izveidot savienojumu ar datubāzi**
+
+Pārbaudiet, vai Laragon ir palaists MySQL un `.env` failā norādīti pareizi datubāzes iestatījumi.
+
+**Kļūda par trūkstošām PHP bibliotēkām**
+
+Izpildiet:
 
 ```cmd
-cd C:\laragon\www\kepudraugs
-php artisan serve
+composer install
 ```
 
-Pēc tam atvērt **http://127.0.0.1:8000**.
+**Kļūda par lietotnes atslēgu**
 
----
+Izpildiet:
 
-**GitHub:** https://github.com/rodzerz/project-kepudraugs
+```cmd
+php artisan key:generate
+```
 
-**Izstrādes vide:** Laravel 13, PHP 8.3+, MySQL, Blade, CSS, JavaScript.
+**Portu 8000 jau izmanto cita programma**
+
+Palaidiet projektu ar citu portu:
+
+```cmd
+php artisan serve --port=8001
+```
+
+Pēc tam atveriet:
+
+**http://127.0.0.1:8001**
+
+## 9. GitHub repozitorijs
+
+Projekta pirmkods pieejams šeit:
+
+https://github.com/rodzerz/project-kepudraugs.git

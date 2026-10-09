@@ -1,5 +1,7 @@
+
 <!DOCTYPE html>
 <html lang="lv">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -40,14 +42,14 @@
                     </span>
 
                     <span>
-                        💶 {{ $profile->price }} € / dienā
+                        💶 {{ $profile->price }} € / stundā
                     </span>
 
-                    @if ($reviews->count() > 0)
+                    @if ($reviews->total() > 0)
 
                         <span>
                             ⭐ {{ number_format($averageRating, 1) }}
-                            ({{ $reviews->count() }})
+                            ({{ $reviews->total() }})
                         </span>
 
                     @else
@@ -77,7 +79,6 @@
 
         </section>
 
-
         <!-- INFORMĀCIJA -->
 
         <section class="profile-section">
@@ -95,7 +96,6 @@
                 </div>
 
             </div>
-
 
             <div class="sitter-info-grid">
 
@@ -117,7 +117,6 @@
 
                 </div>
 
-
                 <div class="sitter-info-card">
 
                     <div class="sitter-info-icon">
@@ -130,12 +129,11 @@
                         </span>
 
                         <strong>
-                            {{ $profile->price }} € / dienā
+                            {{ $profile->price }} € / stundā
                         </strong>
                     </div>
 
                 </div>
-
 
                 <div class="sitter-info-card">
 
@@ -157,7 +155,6 @@
 
             </div>
 
-
             <div class="sitter-detail-grid">
 
                 <article class="sitter-detail-card">
@@ -172,7 +169,6 @@
                     </p>
 
                 </article>
-
 
                 <article class="sitter-detail-card">
 
@@ -190,7 +186,6 @@
             </div>
 
         </section>
-
 
         <!-- VĒRTĒJUMS -->
 
@@ -210,10 +205,9 @@
 
             </div>
 
-
             <div class="rating-summary">
 
-                @if ($reviews->count() > 0)
+                @if ($reviews->total() > 0)
 
                     <div class="rating-score">
 
@@ -226,7 +220,6 @@
                         </span>
 
                     </div>
-
 
                     <div class="rating-details">
 
@@ -246,8 +239,8 @@
 
                         <p>
                             Balstīts uz
-                            <strong>{{ $reviews->count() }}</strong>
-                            {{ $reviews->count() == 1 ? 'atsauksmi' : 'atsauksmēm' }}
+                            <strong>{{ $reviews->total() }}</strong>
+                            {{ $reviews->total() == 1 ? 'atsauksmi' : 'atsauksmēm' }}
                         </p>
 
                     </div>
@@ -278,7 +271,6 @@
 
         </section>
 
-
         <!-- ATSAUKSMES -->
 
         <section class="profile-section">
@@ -295,17 +287,16 @@
                     </h2>
                 </div>
 
-                @if ($reviews->count() > 0)
+                @if ($reviews->total() > 0)
 
                     <span class="review-count">
-                        {{ $reviews->count() }}
-                        {{ $reviews->count() == 1 ? 'atsauksme' : 'atsauksmes' }}
+                        {{ $reviews->total() }}
+                        {{ $reviews->total() == 1 ? 'atsauksme' : 'atsauksmes' }}
                     </span>
 
                 @endif
 
             </div>
-
 
             @if ($reviews->count() > 0)
 
@@ -337,7 +328,6 @@
 
                                 </div>
 
-
                                 <div
                                     class="review-stars"
                                     aria-label="{{ $review->rating }} no 5 zvaigznēm"
@@ -356,7 +346,6 @@
                                 </div>
 
                             </div>
-
 
                             @if ($review->review)
 
@@ -377,6 +366,54 @@
                     @endforeach
 
                 </div>
+
+                <!-- ATSAUKSMJU LAPOŠANA -->
+
+                @if ($reviews->hasPages())
+
+                    <nav
+                        aria-label="Atsauksmju lapošana"
+                        style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 24px 0; flex-wrap: wrap;"
+                    >
+
+                        <div>
+
+                            @if (!$reviews->onFirstPage())
+
+                                <a
+                                    href="{{ $reviews->previousPageUrl() }}"
+                                    class="secondary-button"
+                                >
+                                    ← Iepriekšējā
+                                </a>
+
+                            @endif
+
+                        </div>
+
+                        <span>
+                            Lapa {{ $reviews->currentPage() }}
+                            no {{ $reviews->lastPage() }}
+                        </span>
+
+                        <div>
+
+                            @if ($reviews->hasMorePages())
+
+                                <a
+                                    href="{{ $reviews->nextPageUrl() }}"
+                                    class="secondary-button"
+                                >
+                                    Nākamā →
+                                </a>
+
+                            @endif
+
+                        </div>
+
+                    </nav>
+
+                @endif
 
             @else
 

@@ -1,5 +1,5 @@
-
 <?php
+
 
 namespace App\Http\Controllers;
 
@@ -17,7 +17,10 @@ class AdminController extends Controller
             abort(403);
         }
 
-        $users = User::latest()->get();
+        // Lietotāji: 20 ieraksti vienā lapā
+        $users = User::orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->paginate(20);
 
         // Lietotāju statistika
         $totalUsers = User::count();
@@ -62,11 +65,16 @@ class AdminController extends Controller
             abort(403);
         }
 
+        // Saglabā pašreizējās lapas numuru
+        $page = max(1, (int) request()->input('page', 1));
+
+        $redirectUrl = '/admin?page=' . $page;
+
         $user = User::findOrFail($user);
 
         // Administrators nevar bloķēt pats sevi
         if ($user->id === Auth::id()) {
-            return redirect('/admin')
+            return redirect($redirectUrl)
                 ->with(
                     'error',
                     'Administrators nevar bloķēt pats sevi!'
@@ -75,7 +83,7 @@ class AdminController extends Controller
 
         // Administrators nevar bloķēt citu administratoru
         if ($user->role === 'admin') {
-            return redirect('/admin')
+            return redirect($redirectUrl)
                 ->with(
                     'error',
                     'Administratoru kontus nevar bloķēt!'
@@ -91,7 +99,9 @@ class AdminController extends Controller
             ? 'Lietotājs ir bloķēts!'
             : 'Lietotājs ir atbloķēts!';
 
-        return redirect('/admin')->with('success', $message);
+        // Atgriežas tajā pašā lietotāju saraksta lapā
+        return redirect($redirectUrl)
+            ->with('success', $message);
     }
 
     public function bookings()
@@ -100,9 +110,11 @@ class AdminController extends Controller
             abort(403);
         }
 
+        // Rezervācijas: 20 ieraksti vienā lapā
         $bookings = Booking::with(['owner', 'sitter'])
-            ->latest()
-            ->get();
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->paginate(20);
 
         return view('admin.bookings', compact('bookings'));
     }
@@ -113,9 +125,11 @@ class AdminController extends Controller
             abort(403);
         }
 
+        // Mājdzīvnieki: 20 ieraksti vienā lapā
         $pets = Pet::with(['user', 'images'])
-            ->latest()
-            ->get();
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->paginate(20);
 
         return view('admin.pets', compact('pets'));
     }
@@ -125,6 +139,9 @@ class AdminController extends Controller
         if (!Auth::check() || Auth::user()->role !== 'admin') {
             abort(403);
         }
+
+        // Saglabā pašreizējās lapas numuru
+        $page = max(1, (int) request()->input('page', 1));
 
         $pet = Pet::with('images')->findOrFail($pet);
 
@@ -139,7 +156,15 @@ class AdminController extends Controller
         // pet_images ieraksti tiek dzēsti ar cascade.
         $pet->delete();
 
-        return redirect('/admin/pets')
+        // Pēc dzēšanas pārbauda, cik lapas vēl palikušas.
+        // Ja pēdējā lapa kļuvusi tukša, atgriežas iepriekšējā.
+        $remainingPets = Pet::count();
+
+        $lastPage = max(1, (int) ceil($remainingPets / 20));
+
+        $page = min($page, $lastPage);
+
+        return redirect('/admin/pets?page=' . $page)
             ->with(
                 'success',
                 'Mājdzīvnieks un tā saturs ir veiksmīgi noņemts!'

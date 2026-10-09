@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +13,7 @@ class Booking extends Model
     protected $fillable = [
         'owner_id',
         'sitter_id',
+        'pet_id',
         'pet_type',
         'booking_date',
         'start_time',
@@ -28,6 +30,11 @@ class Booking extends Model
     public function sitter(): BelongsTo
     {
         return $this->belongsTo(User::class, 'sitter_id');
+    }
+
+    public function pet(): BelongsTo
+    {
+        return $this->belongsTo(Pet::class, 'pet_id');
     }
 
     public function messages(): HasMany

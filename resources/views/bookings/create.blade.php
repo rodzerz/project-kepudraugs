@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="lv">
 <head>
@@ -16,7 +17,6 @@
     <main class="page-container">
 
         <!-- LAPAS GALVENE -->
-
         <section class="booking-form-header">
 
             <div class="booking-form-header-icon">
@@ -24,7 +24,6 @@
             </div>
 
             <div>
-
                 <p class="section-label">
                     Jauna rezervācija
                 </p>
@@ -37,24 +36,19 @@
                     Izvēlies piemērotu datumu un laiku un nosūti
                     rezervācijas pieprasījumu pieskatītājam.
                 </p>
-
             </div>
 
         </section>
 
-
         <!-- SATURS -->
-
         <section class="booking-form-layout">
 
             <!-- FORMA -->
-
             <div class="booking-form-card">
 
                 <div class="booking-form-card-heading">
 
                     <div>
-
                         <p class="section-label">
                             Rezervācijas informācija
                         </p>
@@ -62,7 +56,6 @@
                         <h2>
                             Izvēlies rezervācijas laiku
                         </h2>
-
                     </div>
 
                     <span class="required-note">
@@ -71,9 +64,7 @@
 
                 </div>
 
-
                 <!-- KĻŪDAS -->
-
                 @if ($errors->any())
 
                     <div class="alert alert-danger">
@@ -85,11 +76,9 @@
                         <div class="form-error-list">
 
                             @foreach ($errors->all() as $error)
-
                                 <p>
                                     • {{ $error }}
                                 </p>
-
                             @endforeach
 
                         </div>
@@ -98,9 +87,7 @@
 
                 @endif
 
-
                 <form action="/bookings" method="POST">
-
                     @csrf
 
                     <input
@@ -109,41 +96,53 @@
                         value="{{ $sitterProfile->user_id }}"
                     >
 
-
-                    <!-- MĀJDZĪVNIEKA VEIDS -->
-
+                    <!-- MĀJDZĪVNIEKA IZVĒLE -->
                     <div class="form-group">
 
-                        <label for="pet_type">
-                            Mājdzīvnieka veids *
+                        <label for="pet_id">
+                            Mājdzīvnieks *
                         </label>
 
-                        <input
-                            type="text"
-                            id="pet_type"
-                            name="pet_type"
-                            value="{{ old('pet_type') }}"
-                            placeholder="Piemēram, Suns"
-                            required
-                        >
+                        @if ($pets->isNotEmpty())
 
-                        <span class="form-help">
-                            Norādi, kādu mājdzīvnieku nepieciešams pieskatīt.
-                        </span>
+                            <select id="pet_id" name="pet_id" required>
+                                <option value="">
+                                    Izvēlies savu mājdzīvnieku
+                                </option>
 
-                        @error('pet_type')
+                                @foreach ($pets as $pet)
+                                    <option
+                                        value="{{ $pet->id }}"
+                                        @selected(old('pet_id') == $pet->id)
+                                    >
+                                        {{ $pet->name }} ({{ $pet->species }})
+                                    </option>
+                                @endforeach
 
-                            <p class="field-error">
-                                {{ $message }}
+                            </select>
+
+                            <span class="form-help">
+                                Izvēlies mājdzīvnieku, kuram nepieciešama pieskatīšana.
+                            </span>
+
+                        @else
+
+                            <p class="form-help">
+                                Tev vēl nav pievienots neviens mājdzīvnieks.
+                                Pirms rezervācijas izveides pievieno mājdzīvnieku savā profilā.
                             </p>
 
+                        @endif
+
+                        @error('pet_id')
+                            <p class="field-error">
+                                ⚠️ {{ $message }}
+                            </p>
                         @enderror
 
                     </div>
 
-
                     <!-- DATUMS -->
-
                     <div class="form-group">
 
                         <label for="booking_date">
@@ -155,7 +154,7 @@
                             id="booking_date"
                             name="booking_date"
                             value="{{ old('booking_date') }}"
-                            min="{{ date('Y-m-d') }}"
+                            min="{{ now()->toDateString() }}"
                             required
                         >
 
@@ -164,18 +163,14 @@
                         </span>
 
                         @error('booking_date')
-
                             <p class="field-error">
                                 ⚠️ {{ $message }}
                             </p>
-
                         @enderror
 
                     </div>
 
-
                     <!-- LAIKS -->
-
                     <div class="booking-time-row">
 
                         <div class="form-group">
@@ -193,15 +188,12 @@
                             >
 
                             @error('start_time')
-
                                 <p class="field-error">
                                     ⚠️ {{ $message }}
                                 </p>
-
                             @enderror
 
                         </div>
-
 
                         <div class="form-group">
 
@@ -218,20 +210,16 @@
                             >
 
                             @error('end_time')
-
                                 <p class="field-error">
-                                    {{ $message }}
+                                    ⚠️ {{ $message }}
                                 </p>
-
                             @enderror
 
                         </div>
 
                     </div>
 
-
                     <!-- ZIŅA -->
-
                     <div class="form-group">
 
                         <label for="message">
@@ -250,23 +238,20 @@
                         </span>
 
                         @error('message')
-
                             <p class="field-error">
                                 {{ $message }}
                             </p>
-
                         @enderror
 
                     </div>
 
-
                     <!-- DARBĪBAS -->
-
                     <div class="booking-form-actions">
 
                         <button
                             type="submit"
                             class="main-button"
+                            @disabled($pets->isEmpty())
                         >
                             📅 Nosūtīt rezervācijas pieprasījumu
                         </button>
@@ -284,15 +269,12 @@
 
             </div>
 
-
             <!-- PIESKATĪTĀJA INFORMĀCIJA -->
-
             <aside class="booking-sitter-card">
 
                 <div class="booking-sitter-avatar">
                     {{ mb_strtoupper(mb_substr($sitterProfile->user->name, 0, 1)) }}
                 </div>
-
 
                 <div class="booking-sitter-heading">
 
@@ -306,9 +288,7 @@
 
                 </div>
 
-
                 <div class="booking-sitter-divider"></div>
-
 
                 <div class="booking-sitter-details">
 
@@ -319,7 +299,6 @@
                         </div>
 
                         <div>
-
                             <span>
                                 Pilsēta
                             </span>
@@ -327,11 +306,9 @@
                             <strong>
                                 {{ $sitterProfile->city }}
                             </strong>
-
                         </div>
 
                     </div>
-
 
                     <div class="booking-sitter-detail">
 
@@ -340,21 +317,18 @@
                         </div>
 
                         <div>
-
                             <span>
                                 Cena
                             </span>
 
                             <strong>
-                                {{ number_format($sitterProfile->price, 2, ',', ' ') }} € / dienā
+                                {{ number_format($sitterProfile->price, 2, ',', ' ') }} € / stundā
                             </strong>
-
                         </div>
 
                     </div>
 
                 </div>
-
 
                 <div class="booking-sitter-note">
 

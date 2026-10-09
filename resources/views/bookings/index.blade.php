@@ -1,12 +1,19 @@
+
+
 <!DOCTYPE html>
+
 <html lang="lv">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Manas rezervācijas - ĶepuDraugs.lv</title>
 
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+
 </head>
 
 <body>
@@ -22,40 +29,56 @@
             <div>
 
                 <p class="section-label">
+
                     Tavas rezervācijas
+
                 </p>
 
                 <h1 class="page-title">
+
                     Manas rezervācijas
+
                 </h1>
 
                 <p class="page-description">
+
                     Apskati savus rezervāciju pieprasījumus,
+
                     to statusus un sazinies ar pieskatītājiem.
+
                 </p>
 
             </div>
 
-            <a
-                href="/sitters"
-                class="main-button"
-            >
+            <a href="/sitters" class="main-button">
+
                 🔎 Atrast pieskatītāju
+
             </a>
 
         </section>
 
-
-        <!-- PAZIŅOJUMS -->
+        <!-- PAZIŅOJUMI -->
 
         @if (session('success'))
 
             <div class="alert alert-success">
+
                 <strong>{{ session('success') }}</strong>
+
             </div>
 
         @endif
 
+        @if (session('error'))
+
+            <div class="alert alert-danger">
+
+                <strong>{{ session('error') }}</strong>
+
+            </div>
+
+        @endif
 
         @if ($bookings->count() > 0)
 
@@ -64,14 +87,18 @@
                 @foreach ($bookings as $booking)
 
                     @php
+
                         $unreadMessages = $booking->messages()
+
                             ->where('receiver_id', auth()->id())
+
                             ->whereNull('read_at')
+
                             ->count();
 
                         $hasReview = $booking->review()->exists();
-                    @endphp
 
+                    @endphp
 
                     <article class="booking-card">
 
@@ -82,54 +109,69 @@
                             <div class="booking-person">
 
                                 <div class="booking-person-avatar">
+
                                     {{ mb_strtoupper(mb_substr($booking->sitter->name, 0, 1)) }}
+
                                 </div>
 
                                 <div>
 
                                     <span class="booking-person-label">
+
                                         Pieskatītājs
+
                                     </span>
 
                                     <h2>
+
                                         {{ $booking->sitter->name }}
+
                                     </h2>
 
                                 </div>
 
                             </div>
 
-
                             <div class="booking-status-wrapper">
 
                                 @if ($booking->status === 'pending')
 
                                     <span class="status status-pending">
+
                                         Gaida apstiprinājumu
+
                                     </span>
 
                                 @elseif ($booking->status === 'accepted')
 
                                     <span class="status status-accepted">
+
                                         Pieņemta
+
                                     </span>
 
                                 @elseif ($booking->status === 'completed')
 
                                     <span class="status status-completed">
+
                                         Pabeigta
+
                                     </span>
 
                                 @elseif ($booking->status === 'rejected')
 
                                     <span class="status status-rejected">
+
                                         Noraidīta
+
                                     </span>
 
                                 @elseif ($booking->status === 'cancelled')
 
                                     <span class="status status-cancelled">
+
                                         Atcelta
+
                                     </span>
 
                                 @endif
@@ -138,69 +180,128 @@
 
                         </div>
 
-
                         <!-- REZERVĀCIJAS INFORMĀCIJA -->
 
                         <div class="booking-details-grid">
 
+                            <!-- MĀJDZĪVNIEKS -->
+
                             <div class="booking-detail-item">
 
                                 <div class="booking-detail-icon">
+
                                     🐕
+
                                 </div>
 
                                 <div>
 
                                     <span>
+
                                         Mājdzīvnieka veids
+
                                     </span>
 
                                     <strong>
+
                                         {{ $booking->pet_type }}
+
                                     </strong>
 
                                 </div>
 
                             </div>
 
+                            <!-- DATUMS -->
 
                             <div class="booking-detail-item">
 
                                 <div class="booking-detail-icon">
+
                                     📅
+
                                 </div>
 
                                 <div>
 
                                     <span>
+
                                         Datums
+
                                     </span>
 
                                     <strong>
+
                                         {{ \Carbon\Carbon::parse($booking->booking_date)->format('d.m.Y.') }}
+
                                     </strong>
 
                                 </div>
 
                             </div>
 
+                            <!-- LAIKS -->
 
                             <div class="booking-detail-item">
 
                                 <div class="booking-detail-icon">
+
                                     🕐
+
                                 </div>
 
                                 <div>
 
                                     <span>
+
                                         Laiks
+
                                     </span>
 
                                     <strong>
+
                                         {{ substr($booking->start_time, 0, 5) }}
+
                                         –
+
                                         {{ substr($booking->end_time, 0, 5) }}
+
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                            <!-- KOPĒJĀ CENA -->
+
+                            <div class="booking-detail-item">
+
+                                <div class="booking-detail-icon">
+
+                                    💶
+
+                                </div>
+
+                                <div>
+
+                                    <span>
+
+                                        Kopējā cena
+
+                                    </span>
+
+                                    <strong>
+
+                                        @if ($booking->total_price !== null)
+
+                                            {{ number_format($booking->total_price, 2, ',', ' ') }} €
+
+                                        @else
+
+                                            Nav norādīta
+
+                                        @endif
+
                                     </strong>
 
                                 </div>
@@ -208,7 +309,6 @@
                             </div>
 
                         </div>
-
 
                         <!-- REZERVĀCIJAS ZIŅA -->
 
@@ -216,95 +316,118 @@
 
                             <div class="booking-message-heading">
 
-                                <span>
-                                    💬
-                                </span>
+                                <span>💬</span>
 
                                 <strong>
+
                                     Rezervācijas ziņa
+
                                 </strong>
 
                             </div>
 
-
                             @if ($booking->message)
 
                                 <p>
+
                                     {{ $booking->message }}
+
                                 </p>
 
                             @else
 
                                 <p class="booking-no-message">
+
                                     Rezervācijai nav pievienota papildu ziņa.
+
                                 </p>
 
                             @endif
 
                         </div>
 
-
                         <!-- DARBĪBAS -->
 
                         <div class="booking-card-actions">
 
                             <a
+
                                 href="/bookings/{{ $booking->id }}/messages"
+
                                 class="secondary-button message-button"
+
                             >
+
                                 💬 Sarakste
 
                                 @if ($unreadMessages > 0)
 
                                     <span class="unread-badge">
+
                                         {{ $unreadMessages }}
+
                                     </span>
 
                                 @endif
 
                             </a>
 
+                            @if (in_array($booking->status, ['pending', 'accepted'])
 
-                            @if ($booking->status === 'pending')
+                                && \Carbon\Carbon::parse($booking->booking_date . ' ' . $booking->start_time)->isFuture())
 
                                 <form
+
                                     action="/bookings/{{ $booking->id }}/cancel"
+
                                     method="POST"
+
                                     class="booking-action-form"
+
                                     onsubmit="return confirm('Vai tiešām vēlies atcelt šo rezervāciju?');"
+
                                 >
 
                                     @csrf
 
                                     <button
+
                                         type="submit"
+
                                         class="danger-button"
+
                                     >
+
                                         ✕ Atcelt rezervāciju
+
                                     </button>
 
                                 </form>
 
                             @endif
 
-
                             @if ($booking->status === 'completed' && !$hasReview)
 
                                 <a
+
                                     href="/bookings/{{ $booking->id }}/review"
+
                                     class="main-button"
+
                                 >
+
                                     ⭐ Atstāt atsauksmi
+
                                 </a>
 
                             @elseif ($booking->status === 'completed' && $hasReview)
 
                                 <span class="review-added-badge">
-                                    <span>
-                                        ⭐
-                                    </span>
+
+                                    <span>⭐</span>
 
                                     Atsauksme pievienota
+
                                 </span>
 
                             @endif
@@ -317,6 +440,12 @@
 
             </section>
 
+            {{-- LAPOŠANA --}}
+            @if ($bookings->hasPages())
+                <nav aria-label="Rezervāciju lapas" style="margin-top: 24px; display: flex; justify-content: center;">
+                    {{ $bookings->links() }}
+                </nav>
+            @endif
 
         @else
 
@@ -325,23 +454,29 @@
             <section class="bookings-empty-state">
 
                 <div class="empty-state-icon">
+
                     📅
+
                 </div>
 
                 <h2>
+
                     Tev vēl nav rezervāciju
+
                 </h2>
 
                 <p>
+
                     Atrodi piemērotu mājdzīvnieku pieskatītāju
+
                     un izveido savu pirmo rezervāciju.
+
                 </p>
 
-                <a
-                    href="/sitters"
-                    class="main-button"
-                >
+                <a href="/sitters" class="main-button">
+
                     🔎 Atrast pieskatītāju
+
                 </a>
 
             </section>
@@ -351,4 +486,5 @@
     </main>
 
 </body>
+
 </html>
